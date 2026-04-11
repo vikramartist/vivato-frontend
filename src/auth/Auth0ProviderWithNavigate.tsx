@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Auth0Provider, User, type AppState } from "@auth0/auth0-react"
 import { useNavigate } from "react-router-dom"
 
