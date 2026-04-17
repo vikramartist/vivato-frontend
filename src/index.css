@@ -7,6 +7,16 @@ body {
   width: 100%;
 }
 
+/* Hide scrollbar (works in most browsers) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

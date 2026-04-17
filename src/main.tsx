@@ -8,6 +8,7 @@ import AppRoutes from "./AppRoutes"
 import Auth0ProviderWithNavigate from "./auth/Auth0ProviderWithNavigate"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { Toaster } from "./components/ui/sonner"
+import { TooltipProvider } from "./components/ui/tooltip"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,8 +24,10 @@ createRoot(document.getElementById("root")!).render(
       <Router>
         <QueryClientProvider client={queryClient}>
           <Auth0ProviderWithNavigate>
-            <AppRoutes />
-            <Toaster visibleToasts={1} position="bottom-center" richColors />
+            <TooltipProvider>
+              <AppRoutes />
+              <Toaster visibleToasts={1} position="bottom-center" richColors />
+            </TooltipProvider>
           </Auth0ProviderWithNavigate>
         </QueryClientProvider>
       </Router>

@@ -9,6 +9,7 @@ type CreateUserRequest = {
   auth0Id: string
   email: string
   profile_pic: string
+  role?: string
 }
 
 type UpdateMyUserRequest = {
@@ -45,7 +46,7 @@ export const useGetMyUser = () => {
   } = useQuery("fetchCurrentUser", getMyUserRequest)
 
   if (error) {
-    toast.error(error.toString())
+    toast.error("Failed to get the Profile Details!")
   }
 
   return { currentUser, isLoading }
@@ -84,7 +85,6 @@ export const useUpdateMyUser = () => {
 
   const updateMyUserRequest = async (formData: UpdateMyUserRequest) => {
     const accessToken = await getAccessTokenSilently()
-    console.log("token", accessToken)
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
       method: "PUT",
       headers: {
