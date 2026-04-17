@@ -7,7 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 type CreateUserRoleRequest = {
   userId?: string
   email?: string
-  name: string
+  name?: string
   fullAddress: string
   requestedRole?: string
   currentRole?: string
