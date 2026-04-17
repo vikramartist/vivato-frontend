@@ -11,16 +11,30 @@ import { Button } from "./ui/button"
 import { useAuth0 } from "@auth0/auth0-react"
 import MobilenavLinks from "./mobile-nav-links"
 import { Spinner } from "./ui/spinner"
+import { useEffect, useState } from "react"
 
 const MobileNav = () => {
   const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0()
+
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setOpen(false)
+      }
+    }
+    window.addEventListener("resize", handleResize)
+
+    return () => window.removeEventListener("resize", handleResize)
+  })
 
   if (isLoading) {
     return <Spinner className="h-6 w-6" />
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Menu className="text-orange-500" />
       </SheetTrigger>
@@ -33,9 +47,7 @@ const MobileNav = () => {
                 alt={user?.given_name}
                 className="h-8 w-8 rounded-xl shadow-md"
               />
-              <span className="text-[12px] md:text-sm">
-                Hello! {user?.name}
-              </span>
+              <span className="text-[10px]">Hello! {user?.name}</span>
             </span>
           ) : (
             <>

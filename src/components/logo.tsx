@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
 
 const Logo = () => {
+  const navigate = useNavigate()
   return (
     <Button
+      onClick={() => navigate("/")}
       variant={"outline"}
       className="flex w-auto shrink-0 items-center gap-2 border-none bg-background px-2"
       size={"sm"}
