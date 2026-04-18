@@ -31,7 +31,7 @@ const MobilenavLinks = () => {
         onClick={() => logout()}
         variant={"link"}
         size={"sm"}
-        className="flex items-center px-3 text-[10px] font-bold text-white"
+        className="flex items-center px-3 text-[10px] font-bold text-orange-500 dark:text-white"
       >
         Log out
       </Button>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Info, Store } from "lucide-react"
 import {
   Dialog,
@@ -19,6 +20,9 @@ import { Checkbox } from "./ui/checkbox"
 import LoadingButton from "./loading-button"
 import { cn } from "@/lib/utils"
 import { useGetMyUser } from "@/api/MyUserApi"
+import { useEffect } from "react"
+import type { RoleRequestType } from "@/type"
+import { toast } from "sonner"
 
 const roleRequestSchema = z.object({
   email: z.string().optional(),
@@ -41,6 +45,7 @@ type Props = {
   isLoading: boolean
   roleStatus: string
   isExisting: boolean
+  roleData: RoleRequestType
 }
 
 const RoleRequest = ({
@@ -48,6 +53,7 @@ const RoleRequest = ({
   isLoading,
   roleStatus,
   isExisting,
+  roleData,
 }: Props) => {
   const { currentUser } = useGetMyUser()
 
@@ -73,28 +79,60 @@ const RoleRequest = ({
     })
   }
 
+  useEffect(() => {
+    if (!roleData) return
+
+    if (roleData.status === "approved" && roleData.currentRole === "Owner") {
+      toast.success(
+        "Horray!, you have been promoted to Owner, now you can create and own your restaurants. Happy Vivatoing!🎉🎊"
+      )
+    }
+
+    if (roleData.status === "declined") {
+      toast.warning(
+        "Oh Oh, you're request for role change has been declined. Try raising the request again!. Reason has been mailed to you"
+      )
+    }
+  }, [roleData.status, roleData.currentRole])
+
+  useEffect(() => {
+    form.reset(roleData)
+  }, [roleData, form])
+
   if (isExisting) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            className={cn(
-              roleStatus === "pending"
-                ? "disabled:bg-gray-500"
-                : roleStatus === "approved"
-                  ? "bg-green-400"
-                  : "bg-red-400"
-            )}
+            className={
+              (cn(
+                roleStatus === "pending"
+                  ? "disabled:bg-gray-500"
+                  : roleStatus === "approved"
+                    ? "disabled:bg-green-400"
+                    : "bg-red-400"
+              ),
+              "border-none")
+            }
           >
-            <Button variant={"outline"} className="fill-white">
+            <Button
+              variant={"outline"}
+              className={cn(
+                roleStatus === "pending"
+                  ? "bg-gray-400 hover:bg-gray-400 dark:bg-gray-200 dark:hover:bg-gray-200"
+                  : roleStatus === "approved"
+                    ? "bg-green-400 hover:bg-green-400 dark:bg-green-200 dark:hover:bg-green-200"
+                    : "bg-red-400 hover:bg-red-400 dark:bg-red-200 dark:hover:bg-red-200"
+              )}
+            >
               <Store
                 className={cn(
                   roleStatus === "pending"
-                    ? "text-gray-400"
+                    ? "bg-gray-400 text-white dark:bg-gray-200 dark:text-white"
                     : roleStatus === "approved"
-                      ? "text-green-400"
-                      : "text-red-400",
-                  "dark:opacity-40"
+                      ? "bg-green-400 text-white dark:bg-green-200 dark:text-white"
+                      : "bg-red-400 text-white dark:bg-red-200 dark:text-white",
+                  "dark:opacity-100"
                 )}
               />
             </Button>
@@ -111,17 +149,17 @@ const RoleRequest = ({
             </div>
           ) : roleStatus === "approved" ? (
             <div className="flex items-center justify-center gap-2">
-              <Info className="h-3 w-3 text-white dark:text-orange-500" />
+              <Info className="h-3 w-3 text-white dark:text-green-500" />
               <span className="text-[12px] font-semibold tracking-tight text-white dark:text-gray-600">
-                "Your role change request has been approved. Happy Vivatoing!"
+                Your role change request has been approved. Happy Vivatoing!
               </span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
-              <Info className="h-3 w-3 text-white dark:text-orange-500" />
+              <Info className="h-3 w-3 text-white dark:text-red-500" />
               <span className="text-[12px] font-semibold tracking-tight text-white dark:text-gray-600">
-                "Your role change request has been declined. Try raising request
-                after 24hrs"
+                Your role change request has been declined. Try raising request
+                after sometime
               </span>
             </div>
           )}
@@ -212,6 +250,7 @@ const RoleRequest = ({
                     </Tooltip>
                   </FieldLabel>
                   <Input
+                    type="text"
                     {...field}
                     placeholder="Enter your address"
                     className="bg-white text-[12px] tracking-tight placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
