@@ -4,18 +4,19 @@ import UsernameMenu from "./username-menu"
 import { ModeToggle } from "./mode-toggle"
 import RoleRequestPage from "./role-request-page"
 import { useGetMyUser } from "@/api/MyUserApi"
+import { useGetRoleRequest } from "@/api/MyRoleApi"
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0()
   const { currentUser } = useGetMyUser()
+  const { getRole } = useGetRoleRequest()
   return (
     <span className="flex items-center justify-between space-x-2">
       <ModeToggle />
       {isAuthenticated ? (
         <>
-          {currentUser?.role !== "Admin" && currentUser?.role !== "Owner" && (
-            <RoleRequestPage />
-          )}
+          {currentUser?.role !== "Admin" &&
+            getRole?.request?.currentRole !== "Owner" && <RoleRequestPage />}
           <UsernameMenu />
         </>
       ) : (

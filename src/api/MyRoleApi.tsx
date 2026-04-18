@@ -23,8 +23,8 @@ type GetRoleRequest = {
     id: string
     status: "pending" | "approved" | "declined"
     requestedRole?: string
-    currenRole?: string
-    address: string
+    currentRole?: string
+    fullAddress: string
     documents: boolean
     feedback?: string
     createdAt?: Date
@@ -47,31 +47,18 @@ export const useGetRoleRequest = () => {
       throw new Error("Error getting the role request")
     }
 
-    return response.json()
+    const data: GetRoleRequest = await response.json()
+    return data
   }
 
   const { data: getRole } = useQuery("role-request", getRoleRequest, {
     refetchOnWindowFocus: true,
     staleTime: 0,
     refetchInterval: (query) => {
-      const data = query?.request as GetRoleRequest | undefined
-      if (!data) return false
-
-      if (data.request?.status === "approved") {
-        toast.success(
-          "Hooray!, You're role has been change to Owner, you can now add and own restaurants. Happy Vivatoing😉🎉🎊"
-        )
-        return 0
-      }
-
-      if (data.request?.status === "declined") {
-        toast.warning(
-          "You're request for Role Change has been Declined. Try to request after 24hrs."
-        )
-        return 0
-      }
-
-      return data.request?.status === "pending" ? 15000 : false
+      return query?.request?.status === "pending" &&
+        query.request.currentRole !== "Owner"
+        ? 15000
+        : false
     },
   })
 

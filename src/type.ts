@@ -8,3 +8,14 @@ export type User = {
   country: string
   role: string
 }
+
+export type RoleRequestType = {
+  id: string
+  status: string
+  requestedRole: string
+  currentRole: string
+  fullAddress: string
+  documents: boolean
+  feedback: string
+  createdAt: Date
+}
