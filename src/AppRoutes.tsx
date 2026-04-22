@@ -4,7 +4,10 @@ import HomePage from "./pages/home-page"
 import AuthCallbackPage from "./pages/auth-call-back"
 import UserProfilePage from "./components/user-profile-page"
 import ProtectedRoute from "./auth/ProtectedRoute"
-import AdminPage from "./pages/admin-page"
+import AdminLayout from "./layouts/admin-layout.tsx"
+import Roles from "./components/admin/roles.tsx"
+import Restaurants from "./components/admin/restaurants.tsx"
+import RestaurantPage from "./components/restaurant-page.tsx"
 
 const AppRoutes = () => {
   return (
@@ -17,7 +20,19 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route path="/admin" element={<AdminPage />} />
+      <Route
+        path="/restaurants"
+        element={
+          <Layout>
+            <RestaurantPage />
+          </Layout>
+        }
+      />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="roles" element={<Roles />} />
+        <Route path="restaurants" element={<Restaurants />} />
+        <Route />
+      </Route>
       <Route path="/auth-callback" element={<AuthCallbackPage />} />
       <Route element={<ProtectedRoute />}>
         <Route

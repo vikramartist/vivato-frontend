@@ -17,18 +17,49 @@ type CreateUserRoleRequest = {
   feedback?: string
 }
 
+type RoleRequest = {
+  id: string
+  status: "pending" | "approved" | "declined"
+  requestedRole?: string
+  currentRole?: string
+  fullAddress: string
+  documents: boolean
+  feedback?: string
+  createdAt?: Date
+  reason: string
+}
+
 type GetRoleRequest = {
   exists: boolean
-  request?: {
-    id: string
-    status: "pending" | "approved" | "declined"
-    requestedRole?: string
-    currentRole?: string
-    fullAddress: string
-    documents: boolean
-    feedback?: string
-    createdAt?: Date
+  request?: RoleRequest
+}
+
+type RequestBody = {
+  _id: string
+  userId: {
+    _id: string
+    name: string
+    email: string
+    role: string
   }
+  requestedRole: string
+  currentRole: string
+  status: string
+  reason: string
+  userFeedback: string
+  address: string
+  documents: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+type AllRoleRequests = {
+  data: [RequestBody]
+}
+
+type ApproveOrRejectRequestInput = {
+  requestId: string
+  comments: string
 }
 
 export const useGetRoleRequest = () => {
@@ -101,4 +132,128 @@ export const useCreateRoleRequest = () => {
   )
 
   return { createRequest, isLoading }
+}
+
+export const useGetAllRoleRequests = () => {
+  const { getAccessTokenSilently } = useAuth0()
+  const getAllRoleRequests = async (): Promise<AllRoleRequests> => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/role-requests/requests`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Error while getting all role requests")
+    }
+
+    const data = await response.json()
+
+    return data
+  }
+
+  const { data: getAllRequests, isLoading } = useQuery(
+    "all-role-request",
+    getAllRoleRequests,
+    {
+      refetchOnWindowFocus: true,
+      staleTime: 0,
+      refetchInterval: (query) => {
+        return query?.data.some((data) => data.status === "pending")
+          ? 5000
+          : false
+      },
+    }
+  )
+
+  return { getAllRequests, isLoading }
+}
+
+export const useApproveRoleRequest = () => {
+  const { getAccessTokenSilently } = useAuth0()
+  const approveRoleRequest = async ({
+    requestId,
+    comments,
+  }: ApproveOrRejectRequestInput) => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/role-requests/${requestId}/approve`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ comments }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Error while approving role request!")
+    }
+
+    return response.json()
+  }
+
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: approveRequest, isLoading } = useMutation({
+    mutationFn: approveRoleRequest,
+    onSuccess: () => {
+      toast.success("Role request approved")
+      queryClient.invalidateQueries(["role-request"])
+    },
+    onError: () => {
+      toast.error("Failed to approve request")
+    },
+  })
+
+  return { approveRequest, isLoading }
+}
+
+export const useRejectRoleRequest = () => {
+  const { getAccessTokenSilently } = useAuth0()
+  const rejectRoleRequest = async ({
+    requestId,
+    comments,
+  }: ApproveOrRejectRequestInput) => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/role-requests/${requestId}/reject`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ comments }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Error while rejecting role request!")
+    }
+
+    return response.json()
+  }
+
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: rejectRequest, isLoading } = useMutation({
+    mutationFn: rejectRoleRequest,
+    onSuccess: () => {
+      toast.success("Role request rejected")
+      queryClient.invalidateQueries(["role-request"])
+    },
+    onError: () => {
+      toast.error("Failed to reject request")
+    },
+  })
+
+  return { rejectRequest, isLoading }
 }

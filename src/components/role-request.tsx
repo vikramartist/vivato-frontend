@@ -93,7 +93,7 @@ const RoleRequest = ({
         "Oh Oh, you're request for role change has been declined. Try raising the request again!. Reason has been mailed to you"
       )
     }
-  }, [roleData.status, roleData.currentRole])
+  }, [roleData?.status, roleData?.currentRole])
 
   useEffect(() => {
     form.reset(roleData)
@@ -159,7 +159,7 @@ const RoleRequest = ({
               <Info className="h-3 w-3 text-white dark:text-red-500" />
               <span className="text-[12px] font-semibold tracking-tight text-white dark:text-gray-600">
                 Your role change request has been declined. Try raising request
-                after sometime
+                again by following the comments provided in sometime.
               </span>
             </div>
           )}
@@ -169,201 +169,207 @@ const RoleRequest = ({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div>
-                <Button variant={"outline"} className="fill-white">
-                  <Store className="text-orange-500 dark:text-white" />
-                </Button>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent className="bg-black dark:bg-white">
-              Want to become an Owner!
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      </DialogTrigger>
-      <DialogContent className="w-full md:max-w-md">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <DialogHeader className="flex items-center justify-center">
-            <DialogTitle className="text-[14px] font-semibold md:text-[15px]">
-              Vivato Role Change Request
-            </DialogTitle>
-            <DialogDescription className="text-[12px] md:text-[14px]">
-              Make a request for your role change from <strong>Customer</strong>{" "}
-              to <strong>Owner</strong> here. Click 'Request' when you are done
-            </DialogDescription>
-          </DialogHeader>
-          <FieldGroup className="flex items-center justify-center md:flex-row">
-            <Controller
-              name="email"
-              control={form.control}
-              render={() => (
-                <Field>
-                  <FieldLabel className="text-[10px] font-semibold tracking-tight md:text-[12px]">
-                    Email
-                  </FieldLabel>
-                  <Input
-                    value={currentUser?.email}
-                    disabled
-                    className="bg-white text-[12px] font-semibold tracking-tight md:text-[13px]"
-                  />
-                </Field>
-              )}
-            />
-            <Controller
-              name="name"
-              control={form.control}
-              render={() => (
-                <Field>
-                  <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
-                    Name
-                  </FieldLabel>
-                  <Input
-                    className="bg-white text-[12px] tracking-tight md:text-[13px]"
-                    disabled={!!currentUser?.name}
-                    value={currentUser?.name}
-                  />
-                </Field>
-              )}
-            />
-          </FieldGroup>
-          <FieldGroup>
-            <Controller
-              control={form.control}
-              name="fullAddress"
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
-                    Address
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-orange-500" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
-                        (House No, Locality, Street, city, state, country,
-                        zip-code)
-                      </TooltipContent>
-                    </Tooltip>
-                  </FieldLabel>
-                  <Input
-                    type="text"
-                    {...field}
-                    placeholder="Enter your address"
-                    className="bg-white text-[12px] tracking-tight placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
-                  />
-                </Field>
-              )}
-            />
-          </FieldGroup>
-          <FieldGroup>
-            <Controller
-              control={form.control}
-              name="reason"
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
-                    Reason for change{" "}
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-orange-500" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
-                        Enter your complete reason for the role change
-                      </TooltipContent>
-                    </Tooltip>
-                  </FieldLabel>
-                  <Textarea
-                    {...field}
-                    placeholder="Reason for your role change"
-                    className="no-scrollbar h-4 overflow-y-scroll text-[12px] placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
-                  />
-                </Field>
-              )}
-            />
-          </FieldGroup>
-          <FieldGroup>
-            <Controller
-              control={form.control}
-              name="requestedRole"
-              render={() => (
-                <Field className="w-[80%]">
-                  <FieldLabel className="flex items-center text-[10px] tracking-tight md:text-[12px]">
-                    Role
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-orange-500" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
-                        By default the role is changed to Owner
-                      </TooltipContent>
-                    </Tooltip>
-                  </FieldLabel>
-                  <Input
-                    disabled
-                    className="text-[8px] md:text-[12px]"
-                    value={"Owner"}
-                  />
-                </Field>
-              )}
-            />
-          </FieldGroup>
-          <FieldGroup>
-            <Controller
-              control={form.control}
-              name="documents"
-              render={({ field }) => (
-                <Field className="w-4">
-                  <FieldLabel className="flex items-center gap-2">
-                    <span className="text-[9px] tracking-tight md:text-[12px]">
-                      Documents?
-                    </span>
-                    <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-2">
-                        <Info className="h-3 w-3 text-orange-500" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
-                        Do you have all the required documents? (PAN Card +
-                        Aaadhar Card + Hotel License )
-                      </TooltipContent>
-                    </Tooltip>
-                  </FieldLabel>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className="border-orange-500"
-                  />
-                </Field>
-              )}
-            />
-          </FieldGroup>
-          <div className="w-full">
-            {isLoading ? (
-              <LoadingButton />
-            ) : (
-              <div className="flex w-full items-center justify-between gap-2">
-                <Button
-                  onClick={() => form.reset()}
-                  type="reset"
-                  className="flex-1 bg-blue-600 text-[9px] md:text-[12px] dark:bg-orange-700 dark:text-white"
-                >
-                  Reset
-                </Button>
-                <Button
-                  type="submit"
-                  className="w-full flex-1 bg-orange-700 text-[9px] md:text-[12px] dark:bg-green-700 dark:text-white"
-                >
-                  Request
-                </Button>
-              </div>
-            )}
+    <>
+      {currentUser?.role === "Customer" ||
+        roleData?.status === "declined" ||
+        roleData?.status === undefined}
+      <Dialog>
+        <DialogTrigger asChild>
+          <div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Button variant={"outline"} className="fill-white">
+                    <Store className="text-orange-500 dark:text-white" />
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="bg-black dark:bg-white">
+                Want to become an Owner!
+              </TooltipContent>
+            </Tooltip>
           </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </DialogTrigger>
+        <DialogContent className="w-full md:max-w-md">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <DialogHeader className="flex items-center justify-center">
+              <DialogTitle className="text-[14px] font-semibold md:text-[15px]">
+                Vivato Role Change Request
+              </DialogTitle>
+              <DialogDescription className="text-[12px] md:text-[14px]">
+                Make a request for your role change from{" "}
+                <strong>Customer</strong> to <strong>Owner</strong> here. Click
+                'Request' when you are done
+              </DialogDescription>
+            </DialogHeader>
+            <FieldGroup className="flex items-center justify-center md:flex-row">
+              <Controller
+                name="email"
+                control={form.control}
+                render={() => (
+                  <Field>
+                    <FieldLabel className="text-[10px] font-semibold tracking-tight md:text-[12px]">
+                      Email
+                    </FieldLabel>
+                    <Input
+                      value={currentUser?.email}
+                      disabled
+                      className="bg-white text-[12px] font-semibold tracking-tight md:text-[13px]"
+                    />
+                  </Field>
+                )}
+              />
+              <Controller
+                name="name"
+                control={form.control}
+                render={() => (
+                  <Field>
+                    <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
+                      Name
+                    </FieldLabel>
+                    <Input
+                      className="bg-white text-[12px] tracking-tight md:text-[13px]"
+                      disabled={!!currentUser?.name}
+                      value={currentUser?.name}
+                    />
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+            <FieldGroup>
+              <Controller
+                control={form.control}
+                name="fullAddress"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
+                      Address
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-3 w-3 text-orange-500" />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
+                          (House No, Locality, Street, city, state, country,
+                          zip-code)
+                        </TooltipContent>
+                      </Tooltip>
+                    </FieldLabel>
+                    <Input
+                      type="text"
+                      {...field}
+                      placeholder="Enter your address"
+                      className="bg-white text-[12px] tracking-tight placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
+                    />
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+            <FieldGroup>
+              <Controller
+                control={form.control}
+                name="reason"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
+                      Reason for change{" "}
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-3 w-3 text-orange-500" />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
+                          Enter your complete reason for the role change
+                        </TooltipContent>
+                      </Tooltip>
+                    </FieldLabel>
+                    <Textarea
+                      {...field}
+                      placeholder="Reason for your role change"
+                      className="no-scrollbar h-4 overflow-y-scroll text-[12px] placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
+                    />
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+            <FieldGroup>
+              <Controller
+                control={form.control}
+                name="requestedRole"
+                render={() => (
+                  <Field className="w-[80%]">
+                    <FieldLabel className="flex items-center text-[10px] tracking-tight md:text-[12px]">
+                      Role
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-3 w-3 text-orange-500" />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
+                          By default the role is changed to Owner
+                        </TooltipContent>
+                      </Tooltip>
+                    </FieldLabel>
+                    <Input
+                      disabled
+                      className="text-[8px] md:text-[12px]"
+                      value={"Owner"}
+                    />
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+            <FieldGroup>
+              <Controller
+                control={form.control}
+                name="documents"
+                render={({ field }) => (
+                  <Field className="w-4">
+                    <FieldLabel className="flex items-center gap-2">
+                      <span className="text-[9px] tracking-tight md:text-[12px]">
+                        Documents?
+                      </span>
+                      <Tooltip>
+                        <TooltipTrigger className="flex items-center gap-2">
+                          <Info className="h-3 w-3 text-orange-500" />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
+                          Do you have all the required documents? (PAN Card +
+                          Aaadhar Card + Hotel License )
+                        </TooltipContent>
+                      </Tooltip>
+                    </FieldLabel>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="border-orange-500"
+                    />
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+            <div className="w-full">
+              {isLoading ? (
+                <LoadingButton />
+              ) : (
+                <div className="flex w-full items-center justify-between gap-2">
+                  <Button
+                    onClick={() => form.reset()}
+                    type="reset"
+                    className="flex-1 bg-blue-600 text-[9px] md:text-[12px] dark:bg-orange-700 dark:text-white"
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="w-full flex-1 bg-orange-700 text-[9px] md:text-[12px] dark:bg-green-700 dark:text-white"
+                  >
+                    Request
+                  </Button>
+                </div>
+              )}
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
