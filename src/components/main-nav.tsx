@@ -5,6 +5,7 @@ import { ModeToggle } from "./mode-toggle"
 import RoleRequestPage from "./role-request-page"
 import { useGetMyUser } from "@/api/MyUserApi"
 import { useGetRoleRequest } from "@/api/MyRoleApi"
+import AdminDashboard from "./admin/admin-dashboard"
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0()
@@ -15,6 +16,7 @@ const MainNav = () => {
       <ModeToggle />
       {isAuthenticated ? (
         <>
+          {currentUser?.role === "Admin" && <AdminDashboard />}
           {currentUser?.role !== "Admin" &&
             getRole?.request?.currentRole !== "Owner" && <RoleRequestPage />}
           <UsernameMenu />

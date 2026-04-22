@@ -6,6 +6,7 @@ import { ModeToggle } from "./mode-toggle"
 import RoleRequestPage from "./role-request-page"
 import { useGetMyUser } from "@/api/MyUserApi"
 import { useGetRoleRequest } from "@/api/MyRoleApi"
+import AdminDashboard from "./admin/admin-dashboard"
 
 const Header = () => {
   const { isAuthenticated } = useAuth0()
@@ -17,6 +18,9 @@ const Header = () => {
         <Logo />
         <div className="flex items-center gap-2 px-2 md:hidden">
           <ModeToggle />
+          {isAuthenticated && currentUser?.role === "Admin" && (
+            <AdminDashboard />
+          )}
           {isAuthenticated &&
             currentUser?.role !== "Admin" &&
             getRole?.request?.currentRole !== "Owner" && <RoleRequestPage />}

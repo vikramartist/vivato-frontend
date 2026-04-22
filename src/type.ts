@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type User = {
   _id: string
   email: string
@@ -18,4 +19,10 @@ export type RoleRequestType = {
   documents: boolean
   feedback: string
   createdAt: Date
+}
+
+declare global {
+  interface Window {
+    cloudinary: any
+  }
 }

@@ -45,7 +45,7 @@ export const useGetMyUser = () => {
     error,
   } = useQuery("fetchCurrentUser", getMyUserRequest)
 
-  if (error) {
+  if (error && currentUser?.email) {
     toast.error("Failed to get the Profile Details!")
   }
 
