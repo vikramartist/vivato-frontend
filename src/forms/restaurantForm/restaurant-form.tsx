@@ -85,7 +85,10 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
     },
   })
 
-  const onSubmit = (formData: RestaurantFormData) => {}
+  const onSubmit = (formData: RestaurantFormData) => {
+    console.log(formData)
+    console.log(onSave)
+  }
 
   return (
     <Card className="w-full">
