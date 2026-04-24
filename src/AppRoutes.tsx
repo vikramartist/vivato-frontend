@@ -8,6 +8,7 @@ import AdminLayout from "./layouts/admin-layout.tsx"
 import Roles from "./components/admin/roles.tsx"
 import Restaurants from "./components/admin/restaurants.tsx"
 import RestaurantPage from "./components/restaurant-page.tsx"
+import AdminProtectedRoute from "./auth/AdminProtectedRoute.tsx"
 
 const AppRoutes = () => {
   return (
@@ -20,18 +21,12 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route
-        path="/restaurants"
-        element={
-          <Layout>
-            <RestaurantPage />
-          </Layout>
-        }
-      />
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="roles" element={<Roles />} />
-        <Route path="restaurants" element={<Restaurants />} />
-        <Route />
+      <Route element={<AdminProtectedRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="roles" element={<Roles />} />
+          <Route path="restaurants" element={<Restaurants />} />
+          <Route />
+        </Route>
       </Route>
       <Route path="/auth-callback" element={<AuthCallbackPage />} />
       <Route element={<ProtectedRoute />}>
@@ -40,6 +35,14 @@ const AppRoutes = () => {
           element={
             <Layout>
               <UserProfilePage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/my-restaurants"
+          element={
+            <Layout>
+              <RestaurantPage />
             </Layout>
           }
         />

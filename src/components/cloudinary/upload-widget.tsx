@@ -26,13 +26,13 @@ const UploadWidget = ({ name, label, multiple = false }: Props) => {
     restaurantName?.trim().toLowerCase().replace(/\s+/g, "-") || "temp"
 
   useEffect(() => {
-    if (!window.cloudinary) return
+    if (!window.cloudinary && !currentUser) return
     cloudinaryRef.current = window.cloudinary.createUploadWidget(
       {
         cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
         uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
         multiple,
-        folder: `vivato/restaurants/${currentUser?._id}/${safeRestaurantName}/${multiple ? "menuImages" : "restaurantImage"}`,
+        folder: `vivato/restaurants/${currentUser?._id}/${safeRestaurantName}/menuImages`,
       },
       (err: any, res: any) => {
         if (err) {
@@ -52,8 +52,11 @@ const UploadWidget = ({ name, label, multiple = false }: Props) => {
           if (multiple) {
             setValue(name, [...currentValue, url])
           } else {
-            setValue(name, url)
+            setValue(name, [...currentValue, url])
           }
+          toast.success(
+            `Menu Image${multiple ? "(s)" : ""} uploaded successfully`
+          )
         }
       }
     )
@@ -78,9 +81,7 @@ const UploadWidget = ({ name, label, multiple = false }: Props) => {
               {label || "Upload Menu image"}
             </Button>
           </Field>
-          {!multiple && images && images.length > 0 && (
-            <ImagePreview images={images} />
-          )}
+          {images && images.length > 0 && <ImagePreview images={images} />}
         </div>
       )}
     />

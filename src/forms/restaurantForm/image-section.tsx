@@ -1,4 +1,4 @@
-import UploadWidget from "@/components/cloudinary/upload-widget"
+import UploadMenuWidget from "@/components/cloudinary/upload-menu-widget"
 import { CardDescription } from "@/components/ui/card"
 import {
   Field,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/field"
 import { Controller, useFormContext } from "react-hook-form"
 
-const ImageSection = () => {
+const ImageSection = ({ label }: { label: string }) => {
   const { control } = useFormContext()
 
   return (
@@ -26,10 +26,11 @@ const ImageSection = () => {
           control={control}
           render={({ fieldState }) => (
             <Field className="flex flex-col items-end gap-2">
-              <FieldLabel className="text-[9px] md:text-sm">
-                Menu Image(s)
-              </FieldLabel>
-              <UploadWidget name={"imageUrl"} label="Upload Restaurant Image" />
+              <FieldLabel className="text-[9px] md:text-sm">{label}</FieldLabel>
+              <UploadMenuWidget
+                name={"imageUrl"}
+                label="Upload Restaurant Image"
+              />
               <FieldError className="text-[9px] md:text-[13px]">
                 {fieldState.error?.message}
               </FieldError>

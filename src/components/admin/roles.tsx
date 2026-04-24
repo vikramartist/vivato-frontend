@@ -96,13 +96,13 @@ const Roles = () => {
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody suppressHydrationWarning>
           {getAllRequests?.data.map((request) => (
             <>
               {request.currentRole === "Owner" ||
                 (request.status !== "declined" && (
                   <TableRow
-                    key={request._id}
+                    key={`${request._id}-${request.userId}`}
                     className={cn(
                       "w-full text-[9px] md:text-sm dark:text-white"
                     )}

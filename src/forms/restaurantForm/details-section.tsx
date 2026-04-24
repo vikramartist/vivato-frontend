@@ -73,6 +73,33 @@ const DetailsSection = () => {
             </Field>
           )}
         />
+        <Controller
+          name="contact"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field>
+              <FieldLabel className="text-[10px] md:text-[14px]">
+                Contact
+              </FieldLabel>
+              <Input
+                {...field}
+                className="bg-white placeholder:text-[9px] md:text-[14px]"
+                placeholder="Enter your restaurant description"
+                value={field.value}
+                onChange={field.onChange}
+              />
+              {fieldState.error?.message && (
+                <FieldError
+                  className="text-[9px] tracking-wide md:text-[13px]"
+                  {...field}
+                  aria-invalid
+                >
+                  Contact is required
+                </FieldError>
+              )}
+            </Field>
+          )}
+        />
       </FieldGroup>
       <FieldGroup className="flex flex-row items-center justify-between gap-5">
         <Controller
@@ -200,7 +227,7 @@ const DetailsSection = () => {
                 className="bg-white placeholder:text-[9px] md:text-[14px] md:placeholder:text-[14px]"
                 placeholder="30"
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(e) => field.onChange(Number(e.target.value))}
               />
               {fieldState.error?.message && (
                 <FieldError
@@ -227,7 +254,7 @@ const DetailsSection = () => {
                 className="bg-white placeholder:text-[9px] md:text-[14px] md:placeholder:text-[14px]"
                 placeholder="30"
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(e) => field.onChange(Number(e.target.value))}
               />
               {fieldState.error?.message && (
                 <FieldError

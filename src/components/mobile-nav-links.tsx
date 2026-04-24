@@ -19,6 +19,16 @@ const MobilenavLinks = () => {
           Admin Dashboard
         </Button>
       )}
+      {currentUser?.role === "Owner" && (
+        <Button
+          onClick={() => navigate("/my-restaurants")}
+          variant={"outline"}
+          className="flex items-center text-[10px] font-semibold tracking-tight hover:text-orange-500 dark:bg-[#201f1f] dark:text-white"
+          size={"sm"}
+        >
+          My Restaurants
+        </Button>
+      )}
       <Button
         onClick={() => navigate("/user-profile")}
         variant={"outline"}

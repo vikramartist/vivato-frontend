@@ -59,7 +59,7 @@ const MenuitemInput = ({ index, removeMenuItems }: Props) => {
               placeholder="57.00"
               className="bg-white placeholder:text-[10px] md:placeholder:text-[12px]"
               value={field.value}
-              onChange={field.onChange}
+              onChange={(e) => field.onChange(Number(e.target.value))}
             />
             <FieldError className="text-[8px] tracking-wide md:text-[13px]">
               {fieldState.error?.message}
@@ -67,15 +67,25 @@ const MenuitemInput = ({ index, removeMenuItems }: Props) => {
           </Field>
         )}
       />
-
-      <Field className="flex flex-col items-end gap-2">
-        <FieldLabel className="text-[9px] md:text-sm">Menu Image(s)</FieldLabel>
-        <UploadWidget
-          name={`menuItems.${index}.menuImageUrl`}
-          multiple={true}
-          label="Upload Menu Images"
-        />
-      </Field>
+      <Controller
+        name={`menuItems.${index}.menuImageUrl`}
+        control={control}
+        render={({ fieldState }) => (
+          <Field className="flex flex-col items-end gap-2">
+            <FieldLabel className="text-[9px] md:text-sm">
+              Menu Image(s)
+            </FieldLabel>
+            <UploadWidget
+              name={`menuItems.${index}.menuImageUrl`}
+              multiple={true}
+              label="Upload Menu Images"
+            />
+            <FieldError className="text-[8px] tracking-wide md:text-[13px]">
+              {fieldState.error?.message}
+            </FieldError>
+          </Field>
+        )}
+      />
       <Controller
         name={`menuItems.${index}.calories`}
         control={control}
@@ -87,7 +97,7 @@ const MenuitemInput = ({ index, removeMenuItems }: Props) => {
               placeholder="250.00 (between: 0 - 1000)"
               className="bg-white placeholder:text-[10px] md:placeholder:text-[12px]"
               value={field.value}
-              onChange={field.onChange}
+              onChange={(e) => field.onChange(Number(e.target.value))}
             />
             <FieldError className="text-[8px] tracking-wide md:text-[13px]">
               {fieldState.error?.message}

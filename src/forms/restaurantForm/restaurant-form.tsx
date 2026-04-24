@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import LoadingButton from "@/components/loading-button"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +16,8 @@ import { Separator } from "@/components/ui/separator"
 import CuisinesSection from "./cuisines-section"
 import MenuItem from "./menu-item"
 import ImageSection from "./image-section"
+import TimingSection from "./timing-section"
+import type { Restaurant } from "@/type"
 
 const restaurantSchema = z.object({
   restaurantName: z
@@ -70,7 +71,7 @@ const restaurantSchema = z.object({
 type RestaurantFormData = z.infer<typeof restaurantSchema>
 
 type Props = {
-  onSave: (restaurantFormData: RestaurantFormData) => void
+  onSave: (restaurantFormData: Restaurant) => void
   isLoading: boolean
 }
 
@@ -80,14 +81,15 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
     defaultValues: {
       restaurantType: "veg",
       cuisines: [],
-      menuItems: [{ name: "", menuImageUrl: [], foodType: "veg" }],
+      menuItems: [
+        { name: "", menuImageUrl: [], foodType: "veg", calories: 0, price: 0 },
+      ],
       imageUrl: "",
     },
   })
-
-  const onSubmit = (formData: RestaurantFormData) => {
-    console.log(formData)
-    console.log(onSave)
+  const onSubmit = (restaurantData: RestaurantFormData) => {
+    console.log(restaurantData)
+    onSave(restaurantData)
   }
 
   return (
@@ -109,7 +111,9 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
             <Separator />
             <MenuItem />
             <Separator />
-            <ImageSection />
+            <ImageSection label="Menu Image" />
+            <Separator />
+            <TimingSection />
             <div>
               {isLoading ? (
                 <LoadingButton />

@@ -1,5 +1,5 @@
 import { useCreateRoleRequest, useGetRoleRequest } from "@/api/MyRoleApi"
-import RoleRequest from "./role-request"
+import RoleRequest from "@/components/role-request"
 import type { RoleRequestType } from "@/type"
 
 const RoleRequestPage = () => {
