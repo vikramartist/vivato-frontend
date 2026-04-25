@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { CardDescription } from "@/components/ui/card"
 import { Field, FieldError, FieldGroup } from "@/components/ui/field"
 import { cuisineList } from "@/config/restaurant-options-config"
@@ -5,20 +6,27 @@ import { Controller, useFormContext } from "react-hook-form"
 import CuisineCheckBox from "./cuisine-check-box"
 import { useEffect } from "react"
 
+export type FormValues = {
+  restaurantType: "veg" | "non-veg" | "mixed"
+  cuisines: string[]
+}
+
 const CuisinesSection = () => {
-  const { control, watch, setValue } = useFormContext()
+  const { control, watch, setValue } = useFormContext<FormValues>()
 
   const restaurantType = watch("restaurantType")
+  const selectedCuisines = watch("cuisines") || []
+
+  const cuisines = cuisineList[restaurantType] || []
 
   useEffect(() => {
-    setValue("cuisines", [])
-  }, [restaurantType, setValue])
-  const cuisines =
-    restaurantType === "veg"
-      ? cuisineList[0]["veg"]!
-      : restaurantType === "non-veg"
-        ? cuisineList[1]["non-veg"]!
-        : cuisineList[2]["mixed"]!
+    if (!restaurantType) return
+
+    const filtered = selectedCuisines.filter((c: string) => {
+      cuisines.includes(c)
+    })
+    setValue("cuisines", filtered)
+  }, [restaurantType])
 
   return (
     <div className="space-y-2">

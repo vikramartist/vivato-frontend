@@ -45,7 +45,7 @@ const MenuItem = () => {
             price: "",
             menuImageUrl: [],
             calories: "",
-            foodtype: "",
+            foodtype: "veg",
           })
         }
         className="text-[9px] md:text-[14px]"

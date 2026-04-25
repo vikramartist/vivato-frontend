@@ -1,6 +1,14 @@
 import UploadWidget from "@/components/cloudinary/upload-widget"
 import { Button } from "@/components/ui/button"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Field,
   FieldError,
   FieldGroup,
@@ -99,6 +107,53 @@ const MenuitemInput = ({ index, removeMenuItems }: Props) => {
               value={field.value}
               onChange={(e) => field.onChange(Number(e.target.value))}
             />
+            <FieldError className="text-[8px] tracking-wide md:text-[13px]">
+              {fieldState.error?.message}
+            </FieldError>
+          </Field>
+        )}
+      />
+      <Controller
+        name={`menuItems.${index}.foodType`}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field className="flex flex-col items-end gap-2">
+            <FieldLabel className="text-[9px] md:text-sm">Food Type</FieldLabel>
+            <DropdownMenu>
+              <div>
+                <DropdownMenuTrigger
+                  asChild
+                  className="text-[9px] md:text-[13px]"
+                >
+                  <div>
+                    <Button className="text-[9px] md:text-sm">Food type</Button>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-full">
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="text-[9px] md:text-[13px]">
+                      Select Food type
+                    </DropdownMenuLabel>
+                    {type !== "non-veg" && (
+                      <DropdownMenuItem
+                        onClick={() => field.onChange("veg")}
+                        className="text-[9px] md:text-[13px]"
+                      >
+                        veg
+                      </DropdownMenuItem>
+                    )}
+                    {type !== "veg" && (
+                      <DropdownMenuItem
+                        onClick={() => field.onChange("non-veg")}
+                        className="text-[9px] md:text-[13px]"
+                      >
+                        non-veg
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </div>
+            </DropdownMenu>
             <FieldError className="text-[8px] tracking-wide md:text-[13px]">
               {fieldState.error?.message}
             </FieldError>

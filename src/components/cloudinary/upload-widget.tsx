@@ -60,6 +60,9 @@ const UploadWidget = ({ name, label, multiple = false }: Props) => {
         }
       }
     )
+    return () => {
+      cloudinaryRef.current?.destroy?.()
+    }
   }, [multiple, currentUser])
 
   const handleUpload = () => {

@@ -64,8 +64,8 @@ const restaurantSchema = z.object({
     .string()
     .min(1, { message: "Restaurant Image is required" })
     .url("Must be a valid url"),
-  openingTime: z.coerce.number<number>().min(0).max(2359),
-  closingTime: z.coerce.number<number>().min(0).max(2359),
+  openingTime: z.coerce.number<number>().min(0),
+  closingTime: z.coerce.number<number>().min(0),
 })
 
 type RestaurantFormData = z.infer<typeof restaurantSchema>
@@ -82,13 +82,18 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
       restaurantType: "veg",
       cuisines: [],
       menuItems: [
-        { name: "", menuImageUrl: [], foodType: "veg", calories: 0, price: 0 },
+        {
+          name: "",
+          menuImageUrl: [],
+          foodType: "veg",
+          calories: 0,
+          price: 0,
+        },
       ],
       imageUrl: "",
     },
   })
   const onSubmit = (restaurantData: RestaurantFormData) => {
-    console.log(restaurantData)
     onSave(restaurantData)
   }
 

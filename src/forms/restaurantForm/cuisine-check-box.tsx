@@ -4,12 +4,12 @@ import {
   Controller,
   useFormContext,
   type ControllerRenderProps,
-  type FieldValues,
 } from "react-hook-form"
+import type { FormValues } from "./cuisines-section"
 
 type Props = {
   cuisine: string
-  field: ControllerRenderProps<FieldValues, "cuisines">
+  field: ControllerRenderProps<FormValues, "cuisines">
 }
 
 const CuisineCheckBox = ({ cuisine, field }: Props) => {

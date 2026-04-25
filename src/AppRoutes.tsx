@@ -7,7 +7,7 @@ import ProtectedRoute from "./auth/ProtectedRoute"
 import AdminLayout from "./layouts/admin-layout.tsx"
 import Roles from "./components/admin/roles.tsx"
 import Restaurants from "./components/admin/restaurants.tsx"
-import RestaurantPage from "./components/restaurant-page.tsx"
+import RestaurantPage from "@/pages/restaurant-page.tsx"
 import AdminProtectedRoute from "./auth/AdminProtectedRoute.tsx"
 
 const AppRoutes = () => {
