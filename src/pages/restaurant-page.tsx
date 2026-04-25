@@ -2,6 +2,7 @@ import { useCreateMyRestaurant } from "@/api/MyRestaurantApi"
 import { Table } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import RestaurantForm from "@/forms/restaurantForm/restaurant-form"
+import { cn } from "@/lib/utils"
 import { useState } from "react"
 
 const RestaurantPage = () => {
@@ -10,10 +11,17 @@ const RestaurantPage = () => {
   const [tabValue, setTabValue] = useState("my-restaurants")
 
   return (
-    <Tabs onValueChange={(value) => setTabValue(value)} defaultValue={tabValue}>
-      <TabsList className="w-[50%] gap-2">
+    <Tabs
+      className="w-full"
+      onValueChange={(value) => setTabValue(value)}
+      defaultValue={tabValue}
+    >
+      <TabsList className="mx-auto gap-2 md:w-[50%]">
         <TabsTrigger
-          className="text-[9px] tracking-wide md:text-sm"
+          className={cn(
+            "text-[9px] tracking-wide text-orange-500 md:text-sm",
+            tabValue === "my-restaurants" ? "text-orange-500" : ""
+          )}
           value="my-restaurants"
         >
           My Restaurants
