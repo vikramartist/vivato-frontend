@@ -20,3 +20,18 @@ export const numberToTimeString = (value: number | undefined) => {
 
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`
 }
+
+export const hhmmToMinutes = (time: number) => {
+  const hrs = Math.floor(time / 100)
+  const mins = time % 100
+  return minutesToHHMM(hrs * 60 + mins)
+}
+
+const minutesToHHMM = (minutes: number) => {
+  const hrs = Math.floor(minutes / 60)
+  const mins = minutes % 60
+
+  return `${hrs.toString().padStart(2, "0")}:${mins
+    .toString()
+    .padStart(2, "0")}`
+}

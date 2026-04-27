@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
 export const useGetMyRestaurants = () => {
   const { getAccessTokenSilently } = useAuth0()
 
-  const getMyRestaurants = async (): Promise<Restaurant> => {
+  const getMyRestaurants = async (): Promise<Restaurant[]> => {
     const acceessToken = await getAccessTokenSilently()
     const response = await fetch(`${API_BASE_URL}/api/my/restaurant`, {
       method: "GET",
@@ -24,20 +24,19 @@ export const useGetMyRestaurants = () => {
     return response.json()
   }
 
-  const {
-    data: getRestaurants,
-    isLoading,
-    error,
-    isSuccess,
-  } = useQuery("fetchMyRestaurant", getMyRestaurants)
-
-  if (isSuccess) {
-    toast.success("Restaurants Fecthed!")
-  }
-
-  if (error) {
-    toast.error("Failed to get restaurants!")
-  }
+  const { data: getRestaurants, isLoading } = useQuery(
+    "fetchMyRestaurant",
+    getMyRestaurants,
+    {
+      staleTime: 0,
+      onSuccess: () => {
+        toast.success("Restaurants Fetched!", { id: "fetch-success" })
+      },
+      onError: () => {
+        toast.error("Failed to get restaurants!", { id: "fetch-error" })
+      },
+    }
+  )
 
   return { getRestaurants, isLoading }
 }
