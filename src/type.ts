@@ -54,4 +54,8 @@ export type Restaurant = {
   menuItems: MenuItems[]
   openingTime: number
   closingTime: number
+  location?: {
+    type?: "Point"
+    coordinates?: [number, number]
+  }
 }

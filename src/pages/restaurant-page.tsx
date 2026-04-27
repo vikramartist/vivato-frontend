@@ -1,5 +1,5 @@
 import { useCreateMyRestaurant } from "@/api/MyRestaurantApi"
-import { Table } from "@/components/ui/table"
+import MyRestaurants from "@/components/my-restaurants"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import RestaurantForm from "@/forms/restaurantForm/restaurant-form"
 import { cn } from "@/lib/utils"
@@ -42,7 +42,7 @@ const RestaurantPage = () => {
       {tabValue === "create-restaurant" && (
         <RestaurantForm onSave={createRestaurant} isLoading={isLoading} />
       )}
-      {tabValue === "my-restaurants" && <Table></Table>}
+      {tabValue === "my-restaurants" && <MyRestaurants />}
     </Tabs>
   )
 }
