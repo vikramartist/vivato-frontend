@@ -6,15 +6,13 @@ import { Button } from "../ui/button"
 import MarkerClusterGroup from "react-leaflet-cluster"
 import { hhmmToMinutes } from "@/lib/utils"
 import { Verified } from "lucide-react"
-import FlyToLocation from "../fly-to-location"
+import FlyToLocation from "./fly-to-location"
 
 type Map = {
   restaurants: Restaurant[]
   className: string
   location: LatLngExpression | null
 }
-
-const POSITION = [12.9716, 77.5946]
 
 const Map = ({ restaurants, className, location }: Map) => {
   const customIcon = new Icon({
@@ -27,7 +25,7 @@ const Map = ({ restaurants, className, location }: Map) => {
       zoomControl
       zoom={13}
       className={className}
-      center={POSITION as LatLngExpression}
+      center={location as LatLngExpression}
     >
       <FlyToLocation location={location} />
       <TileLayer
