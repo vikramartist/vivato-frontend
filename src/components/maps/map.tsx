@@ -14,6 +14,8 @@ type Map = {
   location: LatLngExpression | null
 }
 
+const POSITION = [12.9716, 77.5946]
+
 const Map = ({ restaurants, className, location }: Map) => {
   const customIcon = new Icon({
     iconUrl: "/marker-icon.png",
@@ -23,9 +25,9 @@ const Map = ({ restaurants, className, location }: Map) => {
   return (
     <MapContainer
       zoomControl
-      zoom={13}
+      zoom={15}
       className={className}
-      center={location as LatLngExpression}
+      center={POSITION as LatLngExpression}
     >
       <FlyToLocation location={location} />
       <TileLayer
