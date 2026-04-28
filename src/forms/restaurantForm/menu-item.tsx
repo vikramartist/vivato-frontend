@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { CardDescription } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
-import { Controller, useFieldArray, useFormContext } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 import MenuitemInput from "./menu-item-input"
 
 const MenuItem = () => {
@@ -21,30 +21,22 @@ const MenuItem = () => {
         </CardDescription>
       </div>
       <FieldGroup>
-        <Controller
-          control={control}
-          name="menuItems"
-          render={() => (
-            <>
-              {fields.map((_, index) => (
-                <MenuitemInput
-                  key={index}
-                  index={index}
-                  removeMenuItems={() => remove(index)}
-                />
-              ))}
-            </>
-          )}
-        />
+        {fields.map((field, index) => (
+          <MenuitemInput
+            key={field.id}
+            index={index}
+            removeMenuItems={() => remove(index)}
+          />
+        ))}
       </FieldGroup>
       <Button
         type="button"
         onClick={() =>
           append({
             name: "",
-            price: "",
-            menuImageUrl: [],
-            calories: "",
+            price: 0,
+            menuImageUrl: [""],
+            calories: 0,
             foodtype: "veg",
           })
         }

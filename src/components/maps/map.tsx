@@ -12,11 +12,12 @@ type Map = {
   restaurants: Restaurant[]
   className: string
   location: LatLngExpression | null
+  onSelect?: (restaurant: Restaurant) => void
 }
 
 const POSITION = [12.9716, 77.5946]
 
-const Map = ({ restaurants, className, location }: Map) => {
+const Map = ({ restaurants, className, location, onSelect }: Map) => {
   const customIcon = new Icon({
     iconUrl: "/marker-icon.png",
     iconSize: [38, 38],
@@ -57,6 +58,7 @@ const Map = ({ restaurants, className, location }: Map) => {
                     <Button
                       variant={"link"}
                       className="text-[9px] font-normal text-black md:text-[10px]"
+                      onClick={() => onSelect!(restaurantCoordinates)}
                     >
                       {restaurantCoordinates.restaurantName}
                     </Button>

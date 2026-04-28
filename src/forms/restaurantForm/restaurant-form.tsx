@@ -18,6 +18,7 @@ import MenuItem from "./menu-item"
 import ImageSection from "./image-section"
 import TimingSection from "./timing-section"
 import type { Restaurant } from "@/type"
+import { useEffect } from "react"
 
 const restaurantSchema = z.object({
   restaurantName: z
@@ -73,14 +74,15 @@ type RestaurantFormData = z.infer<typeof restaurantSchema>
 type Props = {
   onSave: (restaurantFormData: Restaurant) => void
   isLoading: boolean
+  restaurant?: Restaurant
 }
 
-const RestaurantForm = ({ onSave, isLoading }: Props) => {
+const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
   const form = useForm<RestaurantFormData>({
     resolver: zodResolver(restaurantSchema),
     defaultValues: {
       restaurantType: "veg",
-      cuisines: [],
+      cuisines: [""],
       menuItems: [
         {
           name: "",
@@ -93,6 +95,52 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
       imageUrl: "",
     },
   })
+
+  useEffect(() => {
+    if (!restaurant) return
+
+    const defaultMenuItem: RestaurantFormData["menuItems"][number] = {
+      name: "",
+      price: 0,
+      calories: 0,
+      foodType: "veg",
+      menuImageUrl: [],
+    }
+
+    const mappedMenuItems = restaurant.menuItems?.length
+      ? restaurant.menuItems.map((item) => ({
+          name: item.name ?? "",
+          price: item.price ?? 0,
+          calories: item.calories ?? 0,
+          foodType:
+            item.foodType === "veg" || item.foodType === "non-veg"
+              ? (item.foodType as "veg" | "non-veg")
+              : "veg",
+          menuImageUrl: Array.isArray(item.menuImageUrl)
+            ? item.menuImageUrl
+            : [],
+        }))
+      : [defaultMenuItem]
+
+    form.reset({
+      restaurantName: restaurant.restaurantName ?? "",
+      restaurantType: restaurant.restaurantType ?? "veg",
+      description: restaurant.description ?? "",
+      address: restaurant.address,
+      city: restaurant.city ?? "",
+      contact: restaurant.contact ?? "",
+      country: restaurant.country ?? "",
+      zipCode: restaurant.zipCode ?? "",
+      deliveryPrice: restaurant.deliveryPrice ?? 0,
+      estimatedDeliveryTime: restaurant.estimatedDeliveryTime ?? 0,
+      cuisines: restaurant.cuisines ?? [""],
+      imageUrl: restaurant.imageUrl ?? "",
+      openingTime: restaurant.openingTime ?? 0,
+      closingTime: restaurant.closingTime ?? 0,
+      menuItems: mappedMenuItems,
+    })
+  }, [restaurant])
+
   const onSubmit = (restaurantData: RestaurantFormData) => {
     onSave(restaurantData)
   }
@@ -128,7 +176,7 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
                   disabled={isLoading}
                   className="bg-orange-500 text-[10px] md:text-[14px]"
                 >
-                  Create Restaurant
+                  {restaurant ? "Update " : "Create "} Restaurant
                 </Button>
               )}
             </div>

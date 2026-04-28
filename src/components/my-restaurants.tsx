@@ -12,8 +12,13 @@ import { hhmmToMinutes } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { useState } from "react"
 import type { LatLngExpression } from "leaflet"
+import type { Restaurant } from "@/type"
 
-const MyRestaurants = () => {
+type Restaurants = {
+  onSelect?: (restaurant: Restaurant) => void
+}
+
+const MyRestaurants = ({ onSelect }: Restaurants) => {
   const { getRestaurants, isLoading } = useGetMyRestaurants()
   const [selectedLocation, setSelectedLocation] =
     useState<LatLngExpression | null>(null)
@@ -49,6 +54,7 @@ const MyRestaurants = () => {
             className="h-full w-full rounded-md"
             restaurants={getRestaurants!}
             location={selectedLocation}
+            onSelect={onSelect}
           />
         </div>
         <div className="max-h-125 overflow-y-auto">

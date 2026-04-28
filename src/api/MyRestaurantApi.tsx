@@ -5,6 +5,11 @@ import { toast } from "sonner"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
 
+type UpdateMyRestaurantRequest = {
+  restaurantData: Restaurant
+  restaurantId?: string
+}
+
 export const useGetMyRestaurants = () => {
   const { getAccessTokenSilently } = useAuth0()
 
@@ -80,4 +85,46 @@ export const useCreateMyRestaurant = () => {
   }
 
   return { createRestaurant, isLoading }
+}
+
+export const useUpdateMyRestaurant = () => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const updateMyRestaurant = async ({
+    restaurantData,
+    restaurantId,
+  }: UpdateMyRestaurantRequest): Promise<Restaurant> => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/restaurant/${restaurantId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(restaurantData),
+      }
+    )
+    if (!response.ok) {
+      console.log(await response.json())
+      throw new Error("Failed to update Restaurant!")
+    }
+
+    return response.json()
+  }
+
+  const { mutate: updateRestaurant, isLoading } = useMutation(
+    updateMyRestaurant,
+    {
+      onSuccess: () => {
+        toast.success("Updated Restaurant!")
+      },
+      onError: () => {
+        toast.error("Failed to update restaurant!")
+      },
+    }
+  )
+
+  return { updateRestaurant, isLoading }
 }
