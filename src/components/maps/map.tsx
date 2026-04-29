@@ -7,21 +7,32 @@ import MarkerClusterGroup from "react-leaflet-cluster"
 import { hhmmToMinutes } from "@/lib/utils"
 import { Verified } from "lucide-react"
 import FlyToLocation from "./fly-to-location"
+import { useLocation, useNavigate } from "react-router-dom"
 
 type Map = {
   restaurants: Restaurant[]
   className: string
   location: LatLngExpression | null
-  onSelect?: (restaurant: Restaurant) => void
 }
 
 const POSITION = [12.9716, 77.5946]
 
-const Map = ({ restaurants, className, location, onSelect }: Map) => {
+const Map = ({ restaurants, className, location }: Map) => {
   const customIcon = new Icon({
     iconUrl: "/marker-icon.png",
     iconSize: [38, 38],
   })
+
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+
+  const handleNavigation = (restaurantId: string, restaurant: Restaurant) => {
+    if (!restaurantId) {
+      return
+    }
+
+    navigate(`/${pathname}/edit/${restaurantId}`, { state: restaurant })
+  }
 
   return (
     <MapContainer
@@ -54,15 +65,21 @@ const Map = ({ restaurants, className, location, onSelect }: Map) => {
                   loading="lazy"
                 />
                 <div className="mt-1 flex h-full w-full flex-col items-center justify-center text-[9px] md:text-sm">
+                  <Button
+                    variant={"link"}
+                    className="text-[9px] font-normal text-black md:text-[10px]"
+                    onClick={() =>
+                      handleNavigation(
+                        restaurantCoordinates._id!,
+                        restaurantCoordinates
+                      )
+                    }
+                  >
+                    {restaurantCoordinates.restaurantName}
+                  </Button>
                   <div className="flex w-full items-center justify-between">
-                    <Button
-                      variant={"link"}
-                      className="text-[9px] font-normal text-black md:text-[10px]"
-                      onClick={() => onSelect!(restaurantCoordinates)}
-                    >
-                      {restaurantCoordinates.restaurantName}
-                    </Button>
                     <span className="text-[8px] md:text-[10px]">
+                      Timings:{" "}
                       {hhmmToMinutes(restaurantCoordinates.openingTime)} -{" "}
                       {hhmmToMinutes(restaurantCoordinates.closingTime)}
                     </span>
@@ -71,7 +88,9 @@ const Map = ({ restaurants, className, location, onSelect }: Map) => {
                       {restaurantCoordinates.restaurantType}
                     </span>
                   </div>
-
+                  <span className="text-[8px] md:text-[10px]">
+                    Rating: {4 / 5}
+                  </span>
                   <p className="text-[8px] font-normal tracking-tight md:text-[10px]">
                     {restaurantCoordinates.description.substring(0, 100)}...
                   </p>

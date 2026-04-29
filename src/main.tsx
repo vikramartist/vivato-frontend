@@ -26,7 +26,7 @@ createRoot(document.getElementById("root")!).render(
           <Auth0ProviderWithNavigate>
             <TooltipProvider>
               <AppRoutes />
-              <Toaster visibleToasts={1} position="bottom-center" richColors />
+              <Toaster visibleToasts={1} position="top-center" richColors />
             </TooltipProvider>
           </Auth0ProviderWithNavigate>
         </QueryClientProvider>

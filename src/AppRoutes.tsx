@@ -9,6 +9,8 @@ import Roles from "./components/admin/roles.tsx"
 import Restaurants from "./components/admin/restaurants.tsx"
 import RestaurantPage from "@/pages/restaurant-page.tsx"
 import AdminProtectedRoute from "./auth/AdminProtectedRoute.tsx"
+import CreateRestaurant from "./pages/create-restaurant.tsx"
+import UpdateRestaurant from "./pages/update-restaurant.tsx"
 
 const AppRoutes = () => {
   return (
@@ -43,6 +45,22 @@ const AppRoutes = () => {
           element={
             <Layout>
               <RestaurantPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/my-restaurants/create"
+          element={
+            <Layout>
+              <CreateRestaurant />
+            </Layout>
+          }
+        />
+        <Route
+          path="/my-restaurants/edit/:restaurantId"
+          element={
+            <Layout>
+              <UpdateRestaurant />
             </Layout>
           }
         />

@@ -1,13 +1,13 @@
 import type { Restaurant } from "@/type"
 import { useAuth0 } from "@auth0/auth0-react"
-import { useMutation, useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { toast } from "sonner"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
 
 type UpdateMyRestaurantRequest = {
   restaurantData: Restaurant
-  restaurantId?: string
+  restaurantId: string
 }
 
 export const useGetMyRestaurants = () => {
@@ -44,6 +44,41 @@ export const useGetMyRestaurants = () => {
   )
 
   return { getRestaurants, isLoading }
+}
+
+export const useGetMyRestaurantById = (restaurantId: string) => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const getRestaurantById = async (): Promise<Restaurant> => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/restaurant/${restaurantId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`Failed to get restaurant ${restaurantId}`)
+    }
+
+    return response.json()
+  }
+
+  const { data: getRestaurant, isLoading } = useQuery(
+    "fetchRestaurantById",
+    getRestaurantById,
+    {
+      staleTime: 0,
+      enabled: !!restaurantId,
+    }
+  )
+
+  return { getRestaurant, isLoading }
 }
 
 export const useCreateMyRestaurant = () => {
@@ -114,11 +149,18 @@ export const useUpdateMyRestaurant = () => {
     return response.json()
   }
 
+  const queryClient = useQueryClient()
   const { mutate: updateRestaurant, isLoading } = useMutation(
     updateMyRestaurant,
     {
-      onSuccess: () => {
+      onSuccess: (updatedRestaurant) => {
         toast.success("Updated Restaurant!")
+        queryClient.setQueryData(
+          ["fetchRestaurantById", updatedRestaurant._id],
+          updatedRestaurant
+        )
+
+        queryClient.invalidateQueries(["fetchMyRestaurants"])
       },
       onError: () => {
         toast.error("Failed to update restaurant!")

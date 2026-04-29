@@ -10,7 +10,7 @@ const FlyToLocation = ({ location }: { location: LatLngExpression | null }) => {
 
     if (!map || !map.getCenter()) return
     if (location) {
-      map.flyTo(location, 15, { duration: 1.5 })
+      map.flyTo(location, 18, { duration: 1.5 })
     }
   }, [location, map])
 

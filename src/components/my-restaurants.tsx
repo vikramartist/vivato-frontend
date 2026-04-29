@@ -12,23 +12,23 @@ import { hhmmToMinutes } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { useState } from "react"
 import type { LatLngExpression } from "leaflet"
-import type { Restaurant } from "@/type"
+import { useLocation, useNavigate } from "react-router-dom"
 
-type Restaurants = {
-  onSelect?: (restaurant: Restaurant) => void
-}
-
-const MyRestaurants = ({ onSelect }: Restaurants) => {
+const MyRestaurants = () => {
   const { getRestaurants, isLoading } = useGetMyRestaurants()
   const [selectedLocation, setSelectedLocation] =
     useState<LatLngExpression | null>(null)
+
+  const navigate = useNavigate()
+
+  const { pathname } = useLocation()
 
   if (isLoading) {
     return (
       <div className="flex h-screen w-full animate-pulse flex-col items-center justify-center">
         <img src="/logo.svg" alt="Logo" />
         <span className="text-[9px] md:text-sm">
-          Fetching the reestaurants...
+          Fetching the restaurants...
         </span>
       </div>
     )
@@ -49,24 +49,23 @@ const MyRestaurants = ({ onSelect }: Restaurants) => {
         </span>
       )}
       <div className="grid grid-cols-1 gap-4 px-2 md:grid-cols-2">
-        <div className="h-80 md:sticky md:top-4 md:h-125">
+        <div className="h-80 md:sticky md:top-4 md:h-110">
           <Map
             className="h-full w-full rounded-md"
             restaurants={getRestaurants!}
             location={selectedLocation}
-            onSelect={onSelect}
           />
         </div>
         <div className="max-h-125 overflow-y-auto">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableCell>Edit Details</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell className="w-4">Description</TableCell>
                 <TableCell>Timings</TableCell>
                 <TableCell>Cuisines</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Edit</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -82,6 +81,19 @@ const MyRestaurants = ({ onSelect }: Restaurants) => {
                     setSelectedLocation([lat, lng])
                   }}
                 >
+                  <TableHead>
+                    <Button
+                      onClick={() =>
+                        navigate(`${pathname}/edit/${restaurant._id}`, {
+                          state: "restaurant",
+                        })
+                      }
+                      className="bg-orange-500 text-[9px] text-white hover:bg-orange-600 hover:text-white md:text-[13px] dark:bg-mauve-500 dark:hover:bg-mauve-600"
+                      variant={"outline"}
+                    >
+                      View
+                    </Button>
+                  </TableHead>
                   <TableCell className="cursor-pointer text-orange-500 underline dark:text-blue-400">
                     {restaurant.restaurantName}
                   </TableCell>
@@ -96,19 +108,18 @@ const MyRestaurants = ({ onSelect }: Restaurants) => {
                   <TableHead>
                     {restaurant.restaurantType.toUpperCase()}
                   </TableHead>
-                  <TableHead>
-                    <Button
-                      className="bg-orange-500 text-[9px] text-white hover:bg-orange-600 hover:text-white md:text-[13px] dark:bg-mauve-500 dark:hover:bg-mauve-600"
-                      variant={"outline"}
-                    >
-                      View
-                    </Button>
-                  </TableHead>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
+        <Button
+          variant={"outline"}
+          onClick={() => navigate(`${pathname}/create`)}
+          className="space-y-4 bg-orange-600 text-white hover:bg-orange-500 hover:text-white dark:bg-gray-500 dark:hover:bg-gray-600"
+        >
+          Create new Restaurant
+        </Button>
       </div>
     </div>
   )

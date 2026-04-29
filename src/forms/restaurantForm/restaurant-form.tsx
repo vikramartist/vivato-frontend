@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import LoadingButton from "@/components/loading-button"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,6 +20,7 @@ import ImageSection from "./image-section"
 import TimingSection from "./timing-section"
 import type { Restaurant } from "@/type"
 import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 const restaurantSchema = z.object({
   restaurantName: z
@@ -96,6 +98,8 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     },
   })
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     if (!restaurant) return
 
@@ -141,8 +145,18 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     })
   }, [restaurant])
 
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full animate-pulse flex-col items-center justify-center">
+        <img src="/logo.svg" alt="Logo" />
+        <span className="text-[9px] md:text-sm">Loading</span>
+      </div>
+    )
+  }
+
   const onSubmit = (restaurantData: RestaurantFormData) => {
     onSave(restaurantData)
+    navigate("/my-restaurants")
   }
 
   return (
