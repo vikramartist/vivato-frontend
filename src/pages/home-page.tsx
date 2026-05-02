@@ -1,4 +1,12 @@
+import SearchBar, { type SearchForm } from "@/components/search-bar"
+import { useNavigate } from "react-router-dom"
+
 const HomePage = () => {
+  const navigate = useNavigate()
+
+  const handleSearchSubmit = (searchForm: SearchForm) => {
+    navigate({ pathname: `search/${searchForm.searchQuery}` })
+  }
   return (
     <div className="flex flex-col gap-12">
       <div className="mx-2 -mt-16 flex flex-col gap-5 rounded-lg bg-white py-8 text-center shadow-md dark:bg-[#171f2e]">
@@ -8,6 +16,10 @@ const HomePage = () => {
         <span className="text-[12px] text-muted-foreground md:text-xl dark:text-white">
           Hungry? Tap Vivato.
         </span>
+        <SearchBar
+          placeHolder="Search by City or Town"
+          onSubmit={handleSearchSubmit}
+        />
       </div>
       <div className="grid gap-5 md:grid-cols-2">
         <img src="/landing.png" alt="landing" />

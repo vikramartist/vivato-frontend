@@ -11,6 +11,7 @@ import RestaurantPage from "@/pages/restaurant-page.tsx"
 import AdminProtectedRoute from "./auth/AdminProtectedRoute.tsx"
 import CreateRestaurant from "./pages/create-restaurant.tsx"
 import UpdateRestaurant from "./pages/update-restaurant.tsx"
+import SearchPage from "./pages/search-page.tsx"
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,14 @@ const AppRoutes = () => {
         </Route>
       </Route>
       <Route path="/auth-callback" element={<AuthCallbackPage />} />
+      <Route
+        path="/search/:city"
+        element={
+          <Layout showHero={false}>
+            <SearchPage />
+          </Layout>
+        }
+      />
       <Route element={<ProtectedRoute />}>
         <Route
           path="/user-profile"
