@@ -12,6 +12,8 @@ import AdminProtectedRoute from "./auth/AdminProtectedRoute.tsx"
 import CreateRestaurant from "./pages/create-restaurant.tsx"
 import UpdateRestaurant from "./pages/update-restaurant.tsx"
 import SearchPage from "./pages/search-page.tsx"
+import DetailPage from "./pages/detail-page.tsx"
+import MainMap from "./components/main-map.tsx"
 
 const AppRoutes = () => {
   return (
@@ -37,6 +39,22 @@ const AppRoutes = () => {
         element={
           <Layout showHero={false}>
             <SearchPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/details/:restaurantId"
+        element={
+          <Layout showHero={false}>
+            <DetailPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/restaurants/maps"
+        element={
+          <Layout showHero={false}>
+            <MainMap />
           </Layout>
         }
       />
@@ -74,6 +92,7 @@ const AppRoutes = () => {
           }
         />
       </Route>
+
       <Route path="*" element={<Navigate to={"/"} />} />
     </Routes>
   )

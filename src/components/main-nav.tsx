@@ -6,6 +6,9 @@ import RoleRequestPage from "@/pages/role-request-page"
 import { useGetMyUser } from "@/api/MyUserApi"
 import { useGetRoleRequest } from "@/api/MyRoleApi"
 import AdminDashboard from "./admin/admin-dashboard"
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
+import { Link } from "react-router-dom"
+import { MapPinHouse } from "lucide-react"
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0()
@@ -13,6 +16,16 @@ const MainNav = () => {
   const { getRole } = useGetRoleRequest()
   return (
     <span className="flex items-center justify-between space-x-2">
+      <Tooltip>
+        <TooltipTrigger>
+          <Link to={"/restaurants/maps"}>
+            <MapPinHouse className="text-sm text-orange-500 dark:text-white" />
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="text-[9px] md:text-sm">View Restaurants in Maps</p>
+        </TooltipContent>
+      </Tooltip>
       <ModeToggle />
       {isAuthenticated ? (
         <>

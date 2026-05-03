@@ -55,12 +55,6 @@ const SearchCard = ({ restaurant }: Props) => {
           </div>
         </div>
       </div>
-
-      <div className="flex">
-        <div id="card-content" className="grid gap-2 md:grid-cols-2">
-          <div className="flex flex-col gap-2"></div>
-        </div>
-      </div>
     </Link>
   )
 }
