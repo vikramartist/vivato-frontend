@@ -9,7 +9,7 @@ const HomePage = () => {
   }
   return (
     <div className="flex flex-col gap-12">
-      <div className="mx-2 -mt-16 flex flex-col gap-5 rounded-lg bg-white py-8 text-center shadow-md dark:bg-[#171f2e]">
+      <div className="mx-2 -mt-40 flex flex-col gap-5 rounded-lg bg-white py-8 text-center shadow-md dark:bg-[#171f2e]">
         <h1 className="text-[15px] font-bold tracking-tight text-orange-600 md:text-5xl dark:text-white">
           Feel the Flavor — Vivato
         </h1>

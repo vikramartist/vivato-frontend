@@ -4,12 +4,12 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { Button } from "../ui/button"
 import MarkerClusterGroup from "react-leaflet-cluster"
-import { hhmmToMinutes } from "@/lib/utils"
+import { getLatLng, hhmmToMinutes } from "@/lib/utils"
 import { Verified } from "lucide-react"
 import FlyToLocation from "./fly-to-location"
 import { useLocation, useNavigate } from "react-router-dom"
 
-type Map = {
+type MapProps = {
   restaurants: Restaurant[]
   className: string
   location: LatLngExpression | null
@@ -17,11 +17,22 @@ type Map = {
 
 const POSITION = [12.9716, 77.5946]
 
-const Map = ({ restaurants, className, location }: Map) => {
-  const customIcon = new Icon({
-    iconUrl: "/marker-icon.png",
-    iconSize: [38, 38],
-  })
+const Maps = ({ restaurants, className, location }: MapProps) => {
+  const iconCache = new Map<string, Icon>()
+
+  const getCustomUrl = (image: string): Icon => {
+    if (!iconCache.has(image)) {
+      iconCache.set(
+        image,
+        new Icon({
+          iconUrl: image,
+          iconSize: [38, 38],
+          className: "rounded-full",
+        })
+      )
+    }
+    return iconCache.get(image)!
+  }
 
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -37,7 +48,7 @@ const Map = ({ restaurants, className, location }: Map) => {
   return (
     <MapContainer
       zoomControl
-      zoom={15}
+      zoom={10}
       className={className}
       center={POSITION as LatLngExpression}
     >
@@ -50,11 +61,10 @@ const Map = ({ restaurants, className, location }: Map) => {
         {restaurants.map((restaurantCoordinates) => (
           <Marker
             key={`${restaurantCoordinates._id}-${restaurantCoordinates.restaurantName}`}
-            position={[
-              restaurantCoordinates?.location?.coordinates![1] as number,
-              restaurantCoordinates?.location?.coordinates![0] as number,
-            ]}
-            icon={customIcon}
+            position={getLatLng(
+              restaurantCoordinates.location?.coordinates as [number, number]
+            )}
+            icon={getCustomUrl(restaurantCoordinates.imageUrl)}
           >
             <Popup>
               <div className="w-40">
@@ -89,10 +99,10 @@ const Map = ({ restaurants, className, location }: Map) => {
                     </span>
                   </div>
                   <span className="text-[8px] md:text-[10px]">
-                    Rating: {4 / 5}
+                    Rating: {restaurantCoordinates.rating}/5
                   </span>
                   <p className="text-[8px] font-normal tracking-tight md:text-[10px]">
-                    {restaurantCoordinates.description.substring(0, 100)}...
+                    {restaurantCoordinates.description}
                   </p>
                 </div>
               </div>
@@ -104,4 +114,4 @@ const Map = ({ restaurants, className, location }: Map) => {
   )
 }
 
-export default Map
+export default Maps

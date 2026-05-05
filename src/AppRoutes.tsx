@@ -58,6 +58,14 @@ const AppRoutes = () => {
           </Layout>
         }
       />
+      <Route
+        path="/restaurants/maps/:restaurantId"
+        element={
+          <Layout showHero={false}>
+            <MainMap />
+          </Layout>
+        }
+      />
       <Route element={<ProtectedRoute />}>
         <Route
           path="/user-profile"

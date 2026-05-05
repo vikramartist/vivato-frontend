@@ -58,6 +58,7 @@ export type Restaurant = {
     type?: "Point"
     coordinates?: [number, number]
   }
+  rating?: number
 }
 
 export type RestaurantSearchResponse = {

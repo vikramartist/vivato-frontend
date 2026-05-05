@@ -1,13 +1,6 @@
 import { useGetMyRestaurants } from "@/api/MyRestaurantApi"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./ui/table"
-import Map from "./maps/map"
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "./ui/table"
+import Maps from "./maps/map"
 import { hhmmToMinutes } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { useState } from "react"
@@ -18,6 +11,10 @@ const MyRestaurants = () => {
   const { getRestaurants, isLoading } = useGetMyRestaurants()
   const [selectedLocation, setSelectedLocation] =
     useState<LatLngExpression | null>(null)
+
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<
+    string | null
+  >(null)
 
   const navigate = useNavigate()
 
@@ -50,7 +47,7 @@ const MyRestaurants = () => {
       )}
       <div className="grid grid-cols-1 gap-4 px-2 md:grid-cols-2">
         <div className="h-80 md:sticky md:top-4 md:h-110">
-          <Map
+          <Maps
             className="h-full w-full rounded-md"
             restaurants={getRestaurants!}
             location={selectedLocation}
@@ -60,12 +57,21 @@ const MyRestaurants = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableCell>Edit Details</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell className="w-4">Description</TableCell>
-                <TableCell>Timings</TableCell>
-                <TableCell>Cuisines</TableCell>
-                <TableCell>Type</TableCell>
+                <TableCell className="text-[9px] md:text-sm">
+                  Edit Details
+                </TableCell>
+                <TableCell className="text-[9px] md:text-sm">
+                  Restaurant View
+                </TableCell>
+                <TableCell className="text-[9px] md:text-sm">Name</TableCell>
+                <TableCell className="w-4 text-[9px] md:text-sm">
+                  Description
+                </TableCell>
+                <TableCell className="text-[9px] md:text-sm">Timings</TableCell>
+                <TableCell className="text-[9px] md:text-sm">
+                  Cuisines
+                </TableCell>
+                <TableCell className="text-[9px] md:text-sm">Type</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,9 +85,15 @@ const MyRestaurants = () => {
 
                     const [lng, lat] = coords
                     setSelectedLocation([lat, lng])
+                    setSelectedRestaurantId(restaurant._id!)
                   }}
+                  className={
+                    selectedRestaurantId === restaurant._id
+                      ? "cursor-pointer bg-sky-100 hover:bg-sky-200 dark:bg-gray-600 dark:hover:bg-gray-700"
+                      : ""
+                  }
                 >
-                  <TableHead>
+                  <TableCell>
                     <Button
                       onClick={() =>
                         navigate(`${pathname}/edit/${restaurant._id}`, {
@@ -91,23 +103,34 @@ const MyRestaurants = () => {
                       className="bg-orange-500 text-[9px] text-white hover:bg-orange-600 hover:text-white md:text-[13px] dark:bg-mauve-500 dark:hover:bg-mauve-600"
                       variant={"outline"}
                     >
-                      View
+                      Edit
                     </Button>
-                  </TableHead>
-                  <TableCell className="cursor-pointer text-orange-500 underline dark:text-blue-400">
-                    {restaurant.restaurantName}
-                  </TableCell>
-                  <TableCell className="cols-span-1">
-                    {restaurant.description.substring(0, 40)}...
                   </TableCell>
                   <TableCell>
+                    <Button
+                      onClick={() => navigate(`/details/${restaurant._id}`)}
+                      variant={"outline"}
+                      className="bg-orange-500 text-[9px] text-white hover:bg-orange-600 hover:text-white md:text-[13px] dark:bg-mauve-500 dark:hover:bg-mauve-600"
+                    >
+                      Restaurant View
+                    </Button>
+                  </TableCell>
+                  <TableCell className="cursor-pointer text-[9px] tracking-wide text-orange-500 underline md:text-sm dark:text-white">
+                    {restaurant.restaurantName}
+                  </TableCell>
+                  <TableCell className="cols-span-1 text-[9px] md:text-sm">
+                    {restaurant.description.substring(0, 40)}...
+                  </TableCell>
+                  <TableCell className="text-[9px] md:text-sm">
                     {hhmmToMinutes(restaurant.openingTime)} -{" "}
                     {hhmmToMinutes(restaurant.closingTime)}
                   </TableCell>
-                  <TableHead>{restaurant.cuisines.join(", ")}</TableHead>
-                  <TableHead>
+                  <TableCell className="text-[9px] md:text-sm">
+                    {restaurant.cuisines.join(", ")}
+                  </TableCell>
+                  <TableCell className="text-[9px] md:text-sm">
                     {restaurant.restaurantType.toUpperCase()}
-                  </TableHead>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -116,7 +139,7 @@ const MyRestaurants = () => {
         <Button
           variant={"outline"}
           onClick={() => navigate(`${pathname}/create`)}
-          className="space-y-4 bg-orange-600 text-white hover:bg-orange-500 hover:text-white dark:bg-gray-500 dark:hover:bg-gray-600"
+          className="space-y-4 bg-orange-600 text-[10px] text-white hover:bg-orange-500 hover:text-white md:text-sm dark:bg-gray-500 dark:hover:bg-gray-600"
         >
           Create new Restaurant
         </Button>

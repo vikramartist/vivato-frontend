@@ -1,8 +1,10 @@
 import { useGetAllRestaurants } from "@/api/RestaurantApi"
 import MapPage from "@/pages/map-page"
+import { useParams } from "react-router-dom"
 
 const MainMap = () => {
   const { isLoading, restaurants } = useGetAllRestaurants()
+  const { restaurantId } = useParams()
 
   if (isLoading || !restaurants) {
     return (
@@ -12,11 +14,21 @@ const MainMap = () => {
       </div>
     )
   }
+
+  const className = "w-full h-[80vh] rounded-lg"
+
+  if (restaurantId) {
+    return (
+      <div className="p-2 md:p-2">
+        <MapPage restaurantId={restaurantId} className={className} />
+      </div>
+    )
+  }
+
   return (
-    <MapPage
-      restaurants={restaurants}
-      className="h-screen min-w-sm px-2 md:w-full md:p-1"
-    />
+    <div className="p-2 md:p-2">
+      <MapPage restaurants={restaurants} className={className} />
+    </div>
   )
 }
 

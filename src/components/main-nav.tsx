@@ -7,23 +7,37 @@ import { useGetMyUser } from "@/api/MyUserApi"
 import { useGetRoleRequest } from "@/api/MyRoleApi"
 import AdminDashboard from "./admin/admin-dashboard"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
-import { Link } from "react-router-dom"
-import { MapPinHouse } from "lucide-react"
+import { useLocation, useNavigate } from "react-router-dom"
+import { Home, MapPinHouse } from "lucide-react"
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0()
   const { currentUser } = useGetMyUser()
   const { getRole } = useGetRoleRequest()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+
+  const isMapOpened = pathname === "/restaurants/maps"
+
   return (
     <span className="flex items-center justify-between space-x-2">
       <Tooltip>
-        <TooltipTrigger>
-          <Link to={"/restaurants/maps"}>
-            <MapPinHouse className="text-sm text-orange-500 dark:text-white" />
-          </Link>
+        <TooltipTrigger asChild>
+          <Button
+            variant={"outline"}
+            onClick={() => navigate(isMapOpened ? "/" : "/restaurants/maps")}
+          >
+            {!isMapOpened ? (
+              <MapPinHouse className="text-[9px] text-orange-500 md:text-[13px] dark:text-white" />
+            ) : (
+              <Home className="text-[9px] text-orange-500 md:text-[13px] dark:text-white" />
+            )}
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p className="text-[9px] md:text-sm">View Restaurants in Maps</p>
+          <p className="text-[9px] md:text-sm">
+            {isMapOpened ? "Go back Home" : "View Restaurants in Maps"}
+          </p>
         </TooltipContent>
       </Tooltip>
       <ModeToggle />
