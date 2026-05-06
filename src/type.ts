@@ -27,7 +27,7 @@ declare global {
   }
 }
 
-type MenuItems = {
+export type MenuItem = {
   _id?: string
   name: string
   price: number
@@ -51,7 +51,7 @@ export type Restaurant = {
   estimatedDeliveryTime: number
   imageUrl: string
   cuisines: string[]
-  menuItems: MenuItems[]
+  menuItems: MenuItem[]
   openingTime: number
   closingTime: number
   location?: {

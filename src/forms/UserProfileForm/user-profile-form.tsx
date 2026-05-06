@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -34,15 +33,23 @@ const formSchema = z.object({
   profile_pic: z.string().url("Invalid Image URL").optional(),
 })
 
-type UserFormData = z.infer<typeof formSchema>
+export type UserFormData = z.infer<typeof formSchema>
 
 type Props = {
   onSave: (userprofileData: UserFormData) => void
   isLoading: boolean
   currentUser: User
+  title?: string
+  buttonText?: string
 }
 
-const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
+const UserProfileForm = ({
+  onSave,
+  isLoading,
+  currentUser,
+  title = "User Profile",
+  buttonText = "Submit",
+}: Props) => {
   const { user } = useAuth0()
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
@@ -56,10 +63,10 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-[18px] font-bold md:text-2xl">
-          User Profile
+        <CardTitle className="text-[13px] font-bold md:text-2xl md:text-[18px]">
+          {title}
         </CardTitle>
-        <CardDescription className="text-[12px] tracking-tight md:text-xl">
+        <CardDescription className="text-[10px] tracking-tight md:text-xl md:text-[12px]">
           View and change your profile information here
         </CardDescription>
       </CardHeader>
@@ -71,11 +78,13 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
               control={form.control}
               render={({ field }) => (
                 <Field className="w-[50%]">
-                  <FieldLabel>Email</FieldLabel>
+                  <FieldLabel className="text-[10px] md:text-sm">
+                    Email
+                  </FieldLabel>
                   <Input
                     {...field}
                     disabled
-                    className="bg-white"
+                    className="bg-white text-[9px] md:text-sm"
                     value={user?.email}
                   />
                 </Field>
@@ -90,7 +99,7 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
                     <img
                       src={user?.picture}
                       alt={user?.profile}
-                      className="h-18 w-18 rounded-full"
+                      className="h-15 w-15 rounded-full md:h-18 md:w-18"
                     />
                     <FieldLabel className="text-center">Profile</FieldLabel>
                   </div>
@@ -104,11 +113,19 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>Name</FieldLabel>
-                  <Input {...field} className="bg-white" />
-                  <FieldDescription>Enter your name</FieldDescription>
+                  <FieldLabel className="text-[10px] md:text-sm">
+                    Name
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    className="bg-white text-[9px] md:text-sm"
+                  />
                   {fieldState.error?.message && (
-                    <FieldError {...field} aria-invalid>
+                    <FieldError
+                      className="text-[9px] md:text-sm"
+                      {...field}
+                      aria-invalid
+                    >
                       Name is required
                     </FieldError>
                   )}
@@ -120,11 +137,19 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>AddressLine1</FieldLabel>
-                  <Input {...field} className="bg-white" />
-                  <FieldDescription>Enter your address</FieldDescription>
+                  <FieldLabel className="text-[10px] md:text-sm">
+                    AddressLine1
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    className="bg-white text-[9px] md:text-sm"
+                  />
                   {fieldState.error?.message && (
-                    <FieldError {...field} aria-invalid>
+                    <FieldError
+                      className="text-[9px] md:text-sm"
+                      {...field}
+                      aria-invalid
+                    >
                       Address is required
                     </FieldError>
                   )}
@@ -138,11 +163,19 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>City</FieldLabel>
-                  <Input {...field} className="bg-white" />
-                  <FieldDescription>Enter your city</FieldDescription>
+                  <FieldLabel className="text-[10px] md:text-sm">
+                    City
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    className="bg-white text-[9px] md:text-sm"
+                  />
                   {fieldState.error?.message && (
-                    <FieldError {...field} aria-invalid>
+                    <FieldError
+                      className="text-[9px] md:text-sm"
+                      {...field}
+                      aria-invalid
+                    >
                       City is required
                     </FieldError>
                   )}
@@ -154,11 +187,19 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>Country</FieldLabel>
-                  <Input {...field} className="bg-white" />
-                  <FieldDescription>Enter your country</FieldDescription>
+                  <FieldLabel className="text-[10px] md:text-sm">
+                    Country
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    className="bg-white text-[9px] md:text-sm"
+                  />
                   {fieldState.error?.message && (
-                    <FieldError {...field} aria-invalid>
+                    <FieldError
+                      className="text-[9px] md:text-sm"
+                      {...field}
+                      aria-invalid
+                    >
                       Country is required
                     </FieldError>
                   )}
@@ -170,8 +211,11 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
             {isLoading ? (
               <LoadingButton />
             ) : (
-              <Button type="submit" className="bg-orange-500">
-                Submit
+              <Button
+                type="submit"
+                className="bg-orange-500 text-[10px] md:text-sm"
+              >
+                {buttonText}
               </Button>
             )}
           </div>
