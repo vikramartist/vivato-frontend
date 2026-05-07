@@ -3,7 +3,7 @@ import {
   useCreateCheckoutSession,
   useUpdateOrderFailure,
   useVerifyPayment,
-} from "@/api/MyOrderApi"
+} from "@/api/OrderApi"
 import { useGetRestaurantById } from "@/api/RestaurantApi"
 import CheckoutButton from "@/components/checkout-button"
 import MenuItemCard from "@/components/menu-item-card"
@@ -14,7 +14,7 @@ import { Card, CardFooter } from "@/components/ui/card"
 import type { UserFormData } from "@/forms/UserProfileForm/user-profile-form"
 import type { MenuItem } from "@/type"
 import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
 
 export type CartItem = {
@@ -27,6 +27,7 @@ export type CartItem = {
 
 const DetailPage = () => {
   const { restaurantId } = useParams()
+  const navigate = useNavigate()
 
   const { isLoading, restaurant } = useGetRestaurantById(restaurantId)
   const { createCheckoutSession, isLoading: isCheckoutLoading } =
@@ -144,6 +145,7 @@ const DetailPage = () => {
 
           if (result.success) {
             toast.success("Payment successful 🎉")
+            navigate(`/order-status`)
             setCartItems([])
             sessionStorage.removeItem(`cartItems-${restaurantId}`)
           } else {

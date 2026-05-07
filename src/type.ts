@@ -69,3 +69,38 @@ export type RestaurantSearchResponse = {
     pages: number
   }
 }
+
+export type OrderStatus =
+  | "paid"
+  | "failed"
+  | "pending"
+  | "confirmed"
+  | "preparing"
+  | "outForDelivery"
+  | "delivered"
+  | "cancelled"
+
+export type Order = {
+  _id: string
+  restaurant: Restaurant
+  user: User
+  restaurantName: string
+  cartItems: {
+    menuItemId: string
+    quantity: string
+    name: string
+  }[]
+  deliveryDetails: {
+    email: string
+    name: string
+    addressLine1: string
+    city: string
+    country: string
+  }
+  totalAmount: number
+  razorpayOrderId?: string
+  razorPaymentId?: string
+  status: OrderStatus
+  createdAt: string
+  restaurantId: string
+}
