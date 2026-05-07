@@ -1,6 +1,7 @@
-import type { Restaurant } from "@/type"
+import type { Order, Restaurant } from "@/type"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
+import { useParams } from "react-router-dom"
 import { toast } from "sonner"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
@@ -8,6 +9,101 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
 type UpdateMyRestaurantRequest = {
   restaurantData: Restaurant
   restaurantId: string
+}
+
+export type GetMyRestaurantOrdersRequest = {
+  restaurant: Restaurant
+  orders: Order[]
+  status: string
+}
+
+export type UpdateMyRestaurantOrderStatus = {
+  orderId: string
+  status: string
+}
+
+export const useUpdateMyRestaurantOrderStatus = () => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const { restaurantId } = useParams()
+
+  const updateMyRestaurantOrderStatus = async ({
+    orderId,
+    status,
+  }: UpdateMyRestaurantOrderStatus) => {
+    const aceessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/restaurant/${restaurantId}/orders/${orderId}/status`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${aceessToken}`,
+        },
+        body: JSON.stringify({ status }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to Update Order status for this OrderId:${orderId}`
+      )
+    }
+
+    return response.json()
+  }
+
+  const {
+    mutateAsync: updateRestaurantOrderStatus,
+    isLoading,
+    isError,
+    isSuccess,
+    reset,
+  } = useMutation(updateMyRestaurantOrderStatus)
+
+  if (isSuccess) {
+    toast.success("Order updated")
+  }
+
+  if (isError) {
+    toast.error("Unable to update order")
+    reset()
+  }
+
+  return { updateRestaurantOrderStatus, isLoading }
+}
+
+export const useGetMyRestaurantOrders = () => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const getMyRestaurantOrdersRequest = async (): Promise<
+    GetMyRestaurantOrdersRequest[]
+  > => {
+    const aceessToken = await getAccessTokenSilently()
+    const response = await fetch(`${API_BASE_URL}/api/my/restaurant/orders`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${aceessToken}`,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to get the orders")
+    }
+
+    return response.json()
+  }
+
+  const { data: allOrders, isLoading } = useQuery(
+    "fetchMyRestauantOrders",
+    getMyRestaurantOrdersRequest,
+    {
+      refetchInterval: 5000,
+    }
+  )
+
+  return { allOrders, isLoading }
 }
 
 export const useGetMyRestaurants = () => {

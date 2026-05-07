@@ -14,6 +14,8 @@ import UpdateRestaurant from "./pages/update-restaurant.tsx"
 import SearchPage from "./pages/search-page.tsx"
 import DetailPage from "./pages/detail-page.tsx"
 import MainMap from "./components/main-map.tsx"
+import OrderStatusPage from "./pages/order-status-page.tsx"
+import ManageOrderForm from "./components/orders/manage-order-form.tsx"
 
 const AppRoutes = () => {
   return (
@@ -67,6 +69,22 @@ const AppRoutes = () => {
         }
       />
       <Route element={<ProtectedRoute />}>
+        <Route
+          path="/order-status"
+          element={
+            <Layout>
+              <OrderStatusPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/my-restaurants/:restaurantId/orders"
+          element={
+            <Layout>
+              <ManageOrderForm />
+            </Layout>
+          }
+        />
         <Route
           path="/user-profile"
           element={

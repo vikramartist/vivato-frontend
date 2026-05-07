@@ -7,8 +7,8 @@ import { useGetMyUser } from "@/api/MyUserApi"
 import { useGetRoleRequest } from "@/api/MyRoleApi"
 import AdminDashboard from "./admin/admin-dashboard"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
-import { useLocation, useNavigate } from "react-router-dom"
-import { Home, MapPinHouse } from "lucide-react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Home, MapPinHouse, ShoppingBag } from "lucide-react"
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0()
@@ -46,6 +46,18 @@ const MainNav = () => {
           {currentUser?.role === "Admin" && <AdminDashboard />}
           {currentUser?.role !== "Admin" &&
             getRole?.request?.currentRole !== "Owner" && <RoleRequestPage />}
+          <Button className="flex" type="button" variant={"outline"} asChild>
+            <div className="items-center gap-2">
+              <ShoppingBag className="text-orange-500 dark:text-white" />
+              <Link
+                to={"/order-status"}
+                className="font-semibold hover:text-orange-500 dark:hover:text-white"
+              >
+                Order Status
+              </Link>
+            </div>
+          </Button>
+
           <UsernameMenu />
         </>
       ) : (
