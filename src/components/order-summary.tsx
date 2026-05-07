@@ -5,23 +5,25 @@ import { Badge } from "./ui/badge"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
+import { Trash } from "lucide-react"
+import React from "react"
 
 type Props = {
   restaurant: Restaurant
   cartItems: CartItem[]
+  removeFromCart: (cartItem: CartItem) => void
 }
 
-const OrderSummary = ({ cartItems, restaurant }: Props) => {
+const OrderSummary = ({ cartItems, restaurant, removeFromCart }: Props) => {
   const getTotalCost = () => {
-    const totalInRupee = cartItems.reduce(
+    const subtotal = cartItems.reduce(
       (total, cartItem) => total + cartItem.price * cartItem.quantity,
       0
     )
 
-    let totalInDelivery = totalInRupee + restaurant.deliveryPrice
-    totalInDelivery = totalInDelivery - totalInDelivery * 0.2
+    const discountedSubtotal = subtotal - subtotal * 0.2
 
-    return totalInDelivery
+    return discountedSubtotal + restaurant.deliveryPrice
   }
   return (
     <>
@@ -32,7 +34,7 @@ const OrderSummary = ({ cartItems, restaurant }: Props) => {
         </CardTitle>
         <CardContent className="flex flex-col gap-5">
           {cartItems.map((cartItem) => (
-            <>
+            <React.Fragment key={cartItem._id}>
               {cartItem.quantity > 0 && (
                 <div key={cartItem._id} className="flex justify-between">
                   <span className="text-[8px] md:text-sm">
@@ -44,12 +46,18 @@ const OrderSummary = ({ cartItems, restaurant }: Props) => {
                     </Badge>
                     {cartItem.name}
                   </span>
-                  <span className="flex items-center gap-1 text-[8px] md:text-sm">
-                    Rs {cartItem.price * cartItem.quantity}
-                  </span>
+                  <div className="flex gap-1">
+                    <Trash
+                      className="h-3.5 w-3.5 cursor-pointer items-end text-red-500 md:h-5 md:w-5"
+                      onClick={() => removeFromCart(cartItem)}
+                    />
+                    <span className="flex items-center gap-1 text-[8px] md:text-sm">
+                      Rs {cartItem.price * cartItem.quantity}
+                    </span>
+                  </div>
                 </div>
               )}
-            </>
+            </React.Fragment>
           ))}
           <Separator />
           <div className="flex items-center justify-between">

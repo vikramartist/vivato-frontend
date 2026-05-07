@@ -35,7 +35,26 @@ const DetailPage = () => {
   const { isLoading: isVerifyingLoading, verifyPayment } = useVerifyPayment()
   const { updateOrderFailure } = useUpdateOrderFailure()
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const storedItems = sessionStorage.getItem(`cartItems-${restaurantId}`)
+
+    return storedItems ? JSON.parse(storedItems) : []
+  })
+
+  const handleCartRemoval = (cartItem: CartItem) => {
+    setCartItems((prevCartItem) => {
+      const updatedCartItems = prevCartItem.filter(
+        (item) => item._id !== cartItem._id
+      )
+
+      sessionStorage.setItem(
+        `cartItems-${restaurantId}`,
+        JSON.stringify(updatedCartItems)
+      )
+
+      return updatedCartItems as CartItem[]
+    })
+  }
 
   const handleCartAddition = (menuItem: MenuItem, quantity: number) => {
     setCartItems((cartItem) => {
@@ -46,9 +65,15 @@ const DetailPage = () => {
       let updatedCartItems
 
       if (existingCartItem) {
-        updatedCartItems = cartItem.map((item) =>
-          item._id === menuItem._id ? { ...item, quantity: quantity } : item
-        )
+        if (quantity === 0) {
+          updatedCartItems = cartItem.filter(
+            (item) => item._id !== menuItem._id
+          )
+        } else {
+          updatedCartItems = cartItem.map((item) =>
+            item._id === menuItem._id ? { ...item, quantity } : item
+          )
+        }
       } else {
         updatedCartItems = [
           ...cartItem,
@@ -184,13 +209,20 @@ const DetailPage = () => {
                 key={menu._id}
                 menuItem={menu}
                 onAddCart={handleCartAddition}
+                quantity={
+                  cartItems.find((item) => item._id === menu._id)?.quantity || 0
+                }
               />
             ))}
           </div>
         </div>
         <div>
           <Card>
-            <OrderSummary restaurant={restaurant} cartItems={cartItems} />
+            <OrderSummary
+              restaurant={restaurant}
+              cartItems={cartItems}
+              removeFromCart={handleCartRemoval}
+            />
             <CardFooter>
               <CheckoutButton
                 disabled={cartItems.length === 0}

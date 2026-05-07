@@ -11,28 +11,21 @@ import { Badge } from "./ui/badge"
 type Props = {
   menuItem: MenuItem
   onAddCart: (cartItem: MenuItem, quantity: number) => void
+  quantity: number
 }
 
-const MenuItemCard = ({ menuItem, onAddCart }: Props) => {
+const MenuItemCard = ({ menuItem, onAddCart, quantity }: Props) => {
   const [isPreviewClicked, setIsPreviewClicked] = useState(false)
-  const [itemCount, setItemCount] = useState<number>(0)
 
   const handleItemPlusClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
-    setItemCount((curr) => {
-      const next = curr + 1
-      onAddCart(menuItem, next)
-      return next
-    })
+    onAddCart(menuItem, quantity + 1)
   }
 
   const handleItemMinusClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
-    setItemCount((curr) => {
-      const next = Math.max(0, curr - 1)
-      onAddCart(menuItem, next)
-      return next
-    })
+
+    onAddCart(menuItem, Math.max(0, quantity - 1))
   }
 
   const isMobile = useIsMobile()
@@ -92,13 +85,13 @@ const MenuItemCard = ({ menuItem, onAddCart }: Props) => {
             >
               <PlusIcon className="text-[8px] md:text-sm" />
             </Button>
-            <span defaultValue={0} className="">
-              {itemCount ?? 0}
+            <span defaultValue={0} className="font-bold">
+              {quantity}
             </span>
             <Button
               onClick={(e) => handleItemMinusClick(e)}
               variant={"outline"}
-              disabled={itemCount! <= 0}
+              disabled={quantity <= 0}
               size={isMobile ? "icon-sm" : "icon-lg"}
             >
               <MinusIcon className="text-[8px] md:text-sm" />
