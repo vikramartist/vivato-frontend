@@ -18,6 +18,7 @@ const AuthCallbackPage = () => {
         profile_pic: user.picture!
           ? user.picture!
           : "https://cdn.pixabay.com/photo/2024/05/01/00/37/tiger-8731137_1280.jpg",
+        contact: user.phone_number!,
       })
       hasCreatedUser.current = true
     }
