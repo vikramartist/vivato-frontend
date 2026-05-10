@@ -38,15 +38,15 @@ const NearbyRestaurantsPage = () => {
           onSubmit={handleSearchSubmit}
         />
       </div>
-      <div id="main-content" className="flex flex-col gap-5">
-        <span>
+      <div id="main-content" className="flex flex-col items-start gap-5">
+        <span className="px-2">
           Found{" "}
           {nearbyRestaurants.length > 1
             ? `${nearbyRestaurants.length} Restaurants `
             : `${nearbyRestaurants.length} Restaurant `}
           near you
         </span>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 px-2 md:grid-cols-2 xl:grid-cols-2">
           {nearbyRestaurants.map((restaurant, index) => (
             <SearchCard restaurant={restaurant} key={index} />
           ))}

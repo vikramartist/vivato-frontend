@@ -61,6 +61,18 @@ const OrderCardItem = ({ order, isLoading, onStatusUpdate }: Props) => {
             </span>
           </div>
           <div className="text-[10px] md:text-sm">
+            Email:
+            <span className="ml-2 text-[9px] font-normal md:text-sm">
+              {order.deliveryDetails.email}
+            </span>
+          </div>
+          <div className="text-[10px] md:text-sm">
+            Contact:
+            <span className="ml-2 text-[9px] font-normal md:text-sm">
+              {order.deliveryDetails.contact}
+            </span>
+          </div>
+          <div className="text-[10px] md:text-sm">
             Delivery address:
             <span className="ml-2 text-[9px] font-normal md:text-sm">
               {order.deliveryDetails.addressLine1}, {order.deliveryDetails.city}

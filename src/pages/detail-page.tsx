@@ -122,6 +122,7 @@ const DetailPage = () => {
         city: userFormData.city,
         country: userFormData.country,
         email: userFormData.email as string,
+        contact: userFormData.contact,
       },
     }
 
@@ -164,6 +165,7 @@ const DetailPage = () => {
         addressLine1: userFormData.addressLine1,
         city: userFormData.city,
         country: userFormData.country,
+        contact: userFormData.contact,
       },
 
       theme: {

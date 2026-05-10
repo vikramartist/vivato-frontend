@@ -17,8 +17,12 @@ const UsernameMenu = () => {
   const navigate = useNavigate()
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex w-fit items-center gap-2 px-3 font-bold hover:text-orange-500">
-        <img src={user?.picture} alt="User" className="h-8 w-8 rounded-xl" />
+      <DropdownMenuTrigger className="flex w-fit items-center gap-2 rounded-full border px-3 font-bold hover:text-orange-500">
+        <img
+          src={user?.picture ?? currentUser?.profile_pic}
+          alt={user?.given_name}
+          className="h-8 w-8 rounded-xl bg-cover"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full">
         {currentUser?.role === "Owner" && (

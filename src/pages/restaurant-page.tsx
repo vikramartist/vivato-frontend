@@ -40,7 +40,7 @@ const RestaurantPage = () => {
         className="pg-10 space-y-2 rounded-lg px-2"
       >
         <h2 className="text-sm font-bold md:text-2xl">All Orders</h2>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {allOrders?.map((orders, index) => (
             <AllOrders orders={orders} key={index} />
           ))}

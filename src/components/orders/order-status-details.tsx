@@ -1,6 +1,6 @@
 import type { Order } from "@/type"
 import { Separator } from "../ui/separator"
-import { Mail, MapPinHouse, User } from "lucide-react"
+import { Mail, MapPinHouse, PhoneCall, User } from "lucide-react"
 
 type Props = { order: Order }
 
@@ -10,7 +10,7 @@ const OrderStatusDetails = ({ order }: Props) => {
       <div className="flex flex-col gap-2">
         <span className="text-[10px] font-semibold md:text-sm">
           {" "}
-          Delivering to:
+          {order.status === "delivered" ? `Delivered` : "Delivering to:"}
         </span>
         <span className="flex items-center gap-1 text-[10px] md:text-sm">
           <User className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -19,6 +19,10 @@ const OrderStatusDetails = ({ order }: Props) => {
         <span className="flex items-center gap-1 text-[10px] md:text-sm">
           <Mail className="h-3.5 w-3.5 md:h-4 md:w-4" />
           {order.deliveryDetails.email}
+        </span>
+        <span className="flex items-center gap-1 text-[10px] md:text-sm">
+          <PhoneCall className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          {order.deliveryDetails.contact}
         </span>
         <span className="flex items-center gap-1 text-[10px] md:text-sm">
           <MapPinHouse className="h-3.5 w-3.5 md:h-4 md:w-4" />

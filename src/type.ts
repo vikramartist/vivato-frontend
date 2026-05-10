@@ -9,10 +9,6 @@ export type User = {
   country: string
   role: string
   contact: string
-  location?: {
-    type?: "Point"
-    coordinates?: [number, number]
-  }
 }
 
 export type RoleRequestType = {
@@ -103,6 +99,7 @@ export type Order = {
     addressLine1: string
     city: string
     country: string
+    contact: string
   }
   totalAmount: number
   razorpayOrderId?: string

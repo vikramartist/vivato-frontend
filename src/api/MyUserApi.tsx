@@ -18,10 +18,6 @@ type UpdateMyUserRequest = {
   addressLine1: string
   city: string
   country: string
-  location?: {
-    type?: "Point"
-    coordinates?: [number, number]
-  }
   profile_pic?: string
   contact: string
 }
