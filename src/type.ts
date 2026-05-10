@@ -65,7 +65,7 @@ export type Restaurant = {
   }
   rating?: number
   distance?: number
-  isOpen: boolean
+  isOpen?: boolean
 }
 
 export type RestaurantSearchResponse = {
