@@ -1,6 +1,12 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import type { Order, OrderStatus } from "@/type"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card"
 import { Separator } from "../ui/separator"
 import { Badge } from "../ui/badge"
 import { Label } from "../ui/label"
@@ -15,13 +21,13 @@ import { ORDER_STATUS } from "@/config/order-status-config"
 import { useEffect, useState } from "react"
 
 type Props = {
-  activeOrder: Order
+  order: Order
   isLoading: boolean
   onStatusUpdate?: (status: OrderStatus, orderId: string) => void
 }
 
-const OrderCardItem = ({ activeOrder, isLoading, onStatusUpdate }: Props) => {
-  const [status, setStatus] = useState<OrderStatus>(activeOrder.status)
+const OrderCardItem = ({ order, isLoading, onStatusUpdate }: Props) => {
+  const [status, setStatus] = useState<OrderStatus>(order.status)
 
   const getTime = (orderTime: string) => {
     const orderDateTime = new Date(orderTime)
@@ -35,45 +41,50 @@ const OrderCardItem = ({ activeOrder, isLoading, onStatusUpdate }: Props) => {
   }
 
   useEffect(() => {
-    setStatus(activeOrder.status)
-  }, [activeOrder.status])
+    setStatus(order.status)
+  }, [order.status])
 
   return (
-    <Card key={activeOrder._id} className="cursor-pointer rounded-lg shadow">
+    <Card key={order._id} className="cursor-pointer rounded-lg px-2 shadow">
       <CardHeader>
-        <CardTitle className="mb-3 grid justify-between gap-4 md:grid-cols-2">
+        <CardTitle className="mb-2">
+          <div className="flex items-center gap-2 text-[10px] md:text-sm">
+            Order:
+            <span className="text-[9px] md:text-sm">{order._id}</span>
+          </div>
+        </CardTitle>
+        <CardDescription className="mb-3 grid justify-between gap-4 font-semibold md:grid-cols-2">
           <div className="text-[10px] md:text-sm">
             Customer Name:
             <span className="ml-2 text-[9px] font-normal md:text-sm">
-              {activeOrder.deliveryDetails.name}
+              {order.deliveryDetails.name}
             </span>
           </div>
           <div className="text-[10px] md:text-sm">
             Delivery address:
             <span className="ml-2 text-[9px] font-normal md:text-sm">
-              {activeOrder.deliveryDetails.addressLine1},{" "}
-              {activeOrder.deliveryDetails.city},
-              {activeOrder.deliveryDetails.country}
+              {order.deliveryDetails.addressLine1}, {order.deliveryDetails.city}
+              ,{order.deliveryDetails.country}
             </span>
           </div>
           <div className="text-[10px] md:text-sm">
-            Time
+            ETA
             <span className="ml-2 text-[9px] font-normal md:text-sm">
-              {getTime(activeOrder.createdAt)}
+              {getTime(order.createdAt)}
             </span>
           </div>
           <div className="text-[10px] md:text-sm">
             Total Cost
             <span className="ml-2 text-[9px] font-normal md:text-sm">
-              Rs {activeOrder.totalAmount}
+              Rs {order.totalAmount}
             </span>
           </div>
-        </CardTitle>
+        </CardDescription>
         <Separator />
       </CardHeader>
       <CardContent className="flex gap-6">
         <div className="flex flex-col gap-2">
-          {activeOrder.cartItems.map((cartItem) => (
+          {order.cartItems.map((cartItem) => (
             <span key={cartItem.menuItemId} className="text-[9px] md:text-sm">
               <Badge variant={"outline"} className="mr-2 text-[9px] md:text-sm">
                 {cartItem.quantity}
@@ -90,21 +101,28 @@ const OrderCardItem = ({ activeOrder, isLoading, onStatusUpdate }: Props) => {
             value={status}
             disabled={
               isLoading ||
-              activeOrder.status === "delivered" ||
-              activeOrder.status === "cancelled" ||
-              activeOrder.status === "failed"
+              order.status === "delivered" ||
+              order.status === "cancelled" ||
+              order.status === "failed"
             }
             onValueChange={(value) => {
-              onStatusUpdate?.(value as OrderStatus, activeOrder._id)
+              onStatusUpdate?.(value as OrderStatus, order._id)
               setStatus(value as OrderStatus)
             }}
           >
             <SelectTrigger id="status" className="w-full">
-              <SelectValue placeholder="Status" />
+              <SelectValue
+                className="text-[10px] md:text-sm"
+                placeholder="Status"
+              />
             </SelectTrigger>
             <SelectContent position="popper" className="w-full">
               {ORDER_STATUS.map((status) => (
-                <SelectItem key={status.label} value={status.value}>
+                <SelectItem
+                  className="text-[10px] md:text-sm"
+                  key={status.label}
+                  value={status.value}
+                >
                   {status.label}
                 </SelectItem>
               ))}

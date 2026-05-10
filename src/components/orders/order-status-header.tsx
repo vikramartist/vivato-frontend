@@ -35,10 +35,11 @@ const OrderStatusHeader = ({ order }: Props) => {
           <ShoppingBag className="h-3.5 w-3.5 font-light md:h-4 md:w-4" />
           {getOrderStatusInfo().label}
         </span>
-        <span className="text-[9px] md:text-sm">
-          {" "}
-          Expected by: {getExpectedDelivery()}
-        </span>
+        {order.status !== "delivered" && (
+          <span className="text-[9px] md:text-sm">
+            Expected by: {getExpectedDelivery()}
+          </span>
+        )}
       </h1>
       {order.status !== "delivered" && (
         <Progress

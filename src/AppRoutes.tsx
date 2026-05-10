@@ -16,6 +16,7 @@ import DetailPage from "./pages/detail-page.tsx"
 import MainMap from "./components/main-map.tsx"
 import OrderStatusPage from "./pages/order-status-page.tsx"
 import ManageOrderForm from "./components/orders/manage-order-form.tsx"
+import NearbyRestaurantsPage from "./pages/nearby-restaurant-page.tsx"
 
 const AppRoutes = () => {
   return (
@@ -41,6 +42,14 @@ const AppRoutes = () => {
         element={
           <Layout showHero={false}>
             <SearchPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/restaurants/nearby"
+        element={
+          <Layout showHero={false}>
+            <NearbyRestaurantsPage />
           </Layout>
         }
       />

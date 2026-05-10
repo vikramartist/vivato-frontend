@@ -10,6 +10,7 @@ type CreateUserRequest = {
   email: string
   profile_pic: string
   role?: string
+  contact: string
 }
 
 type UpdateMyUserRequest = {
@@ -17,6 +18,12 @@ type UpdateMyUserRequest = {
   addressLine1: string
   city: string
   country: string
+  location?: {
+    type?: "Point"
+    coordinates?: [number, number]
+  }
+  profile_pic?: string
+  contact: string
 }
 
 export const useGetMyUser = () => {
@@ -46,7 +53,7 @@ export const useGetMyUser = () => {
   } = useQuery("fetchCurrentUser", getMyUserRequest)
 
   if (error && currentUser?.email) {
-    toast.error("Failed to get the Profile Details!")
+    toast.error("Failed to get the Profile Details!", { duration: 0 })
   }
 
   return { currentUser, isLoading }
@@ -108,11 +115,11 @@ export const useUpdateMyUser = () => {
   } = useMutation(updateMyUserRequest)
 
   if (isSuccess) {
-    toast.success("Profile Updated")
+    toast.success("Profile Updated", { duration: 500 })
   }
 
   if (error) {
-    toast.error(error.toString())
+    toast.error(error.toString(), { duration: 1000 })
     reset()
   }
 

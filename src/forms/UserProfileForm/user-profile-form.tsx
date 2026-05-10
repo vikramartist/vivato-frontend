@@ -20,10 +20,17 @@ import LoadingButton from "@/components/loading-button"
 import { Button } from "@/components/ui/button"
 import type { User } from "@/type"
 import { useEffect } from "react"
+import PhoneInputWithCountrySelect, {
+  isValidPhoneNumber,
+} from "react-phone-number-input"
 
 const formSchema = z.object({
   email: z.string().optional(),
   name: z.string().min(1, "Name is required"),
+  contact: z
+    .string()
+    .refine(isValidPhoneNumber, { message: "Invalid phone number" })
+    .min(1, "Contact is required"),
   addressLine1: z
     .string()
     .min(1, "AddressLine1 is required")
@@ -127,6 +134,36 @@ const UserProfileForm = ({
                       aria-invalid
                     >
                       Name is required
+                    </FieldError>
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="contact"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel className="text-[10px] md:text-sm">
+                    Contact
+                  </FieldLabel>
+                  <div className="flex rounded-md border text-[10px] focus-within:ring-0 focus-within:ring-ring md:text-sm">
+                    <PhoneInputWithCountrySelect
+                      international
+                      defaultCountry="IN"
+                      value={field.value}
+                      className="w-full"
+                      onChange={(value) => field.onChange(value ?? "")}
+                    />
+                  </div>
+
+                  {fieldState.error?.message && (
+                    <FieldError
+                      className="text-[9px] md:text-sm"
+                      {...field}
+                      aria-invalid
+                    >
+                      {fieldState.error.message}
                     </FieldError>
                   )}
                 </Field>

@@ -27,6 +27,8 @@ export const useUpdateMyRestaurantOrderStatus = () => {
 
   const { restaurantId } = useParams()
 
+  const queryClient = useQueryClient()
+
   const updateMyRestaurantOrderStatus = async ({
     orderId,
     status,
@@ -56,19 +58,19 @@ export const useUpdateMyRestaurantOrderStatus = () => {
   const {
     mutateAsync: updateRestaurantOrderStatus,
     isLoading,
-    isError,
-    isSuccess,
     reset,
-  } = useMutation(updateMyRestaurantOrderStatus)
+  } = useMutation(updateMyRestaurantOrderStatus, {
+    onSuccess: async () => {
+      toast.success("Order updated")
 
-  if (isSuccess) {
-    toast.success("Order updated")
-  }
+      await queryClient.invalidateQueries(["fetchMyRestauantOrders"])
+    },
 
-  if (isError) {
-    toast.error("Unable to update order")
-    reset()
-  }
+    onError: () => {
+      toast.error("Unable to update order")
+      reset()
+    },
+  })
 
   return { updateRestaurantOrderStatus, isLoading }
 }

@@ -84,7 +84,7 @@ const DetailsSection = () => {
               <Input
                 {...field}
                 className="bg-white placeholder:text-[9px] md:text-[14px]"
-                placeholder="Enter your restaurant description"
+                placeholder="Enter your contact here"
                 value={field.value}
                 onChange={field.onChange}
               />

@@ -39,3 +39,18 @@ const minutesToHHMM = (minutes: number) => {
 export const getLatLng = (coords: [number, number]): [number, number] => {
   return [coords[1], coords[0]]
 }
+
+export const getUserLocation = async () => {
+  const postition = await new Promise<GeolocationPosition>((resolve, error) => {
+    navigator.geolocation.getCurrentPosition(resolve, error, {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    })
+  })
+
+  return {
+    latitude: postition.coords.latitude,
+    longitude: postition.coords.longitude,
+  }
+}

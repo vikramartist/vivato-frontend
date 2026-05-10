@@ -9,6 +9,7 @@ import Auth0ProviderWithNavigate from "./auth/Auth0ProviderWithNavigate"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { Toaster } from "./components/ui/sonner"
 import { TooltipProvider } from "./components/ui/tooltip"
+import "react-phone-number-input/style.css"
 
 const queryClient = new QueryClient({
   defaultOptions: {

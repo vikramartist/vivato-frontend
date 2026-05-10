@@ -109,9 +109,7 @@ const AllOrders = ({ orders }: Props) => {
           className="bg-orange-500 text-white hover:bg-orange-500 hover:text-white"
           variant={"outline"}
           onClick={() =>
-            navigate(`/my-restaurants/${orders.restaurant._id}/orders`, {
-              state: orders,
-            })
+            navigate(`/my-restaurants/${orders.restaurant._id}/orders`)
           }
         >
           Manage Orders

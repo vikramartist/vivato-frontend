@@ -26,6 +26,43 @@ export const useGetAllRestaurants = () => {
   return { restaurants, isLoading }
 }
 
+export const useGetNearbyRestaurants = ({
+  lat,
+  lng,
+  distance = 10000,
+}: {
+  lat: number
+  lng: number
+  distance?: number
+}) => {
+  const getNearbyRestaurantsRequest = async (): Promise<Restaurant[]> => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/restaurant/nearby?lat=${lat}&lng=${lng}&distance=${distance}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Failed to get restaurants")
+    }
+
+    return response.json()
+  }
+  const { data: nearbyRestaurants, isLoading } = useQuery(
+    ["searchNearbyRestaurants", lat, lng, distance],
+    getNearbyRestaurantsRequest,
+    {
+      enabled: lat != null && lng != null,
+    }
+  )
+
+  return { nearbyRestaurants, isLoading }
+}
+
 export const useGetRestaurantById = (restaurantId?: string) => {
   const getRestaurantByIdRequest = async (): Promise<Restaurant> => {
     const response = await fetch(

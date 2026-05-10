@@ -14,6 +14,8 @@ export type SearchState = {
   selectedCuisines: string[]
   foodType: FoodType
   sortOption: string
+  lat?: string
+  lng?: string
 }
 
 const SearchPage = () => {

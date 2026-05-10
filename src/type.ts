@@ -8,6 +8,11 @@ export type User = {
   profile_pic: string
   country: string
   role: string
+  contact: string
+  location?: {
+    type?: "Point"
+    coordinates?: [number, number]
+  }
 }
 
 export type RoleRequestType = {
@@ -59,6 +64,8 @@ export type Restaurant = {
     coordinates?: [number, number]
   }
   rating?: number
+  distance?: number
+  isOpen: boolean
 }
 
 export type RestaurantSearchResponse = {
