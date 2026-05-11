@@ -141,7 +141,7 @@ const Roles = () => {
                             handleSubmission(
                               {
                                 requestId: request._id,
-                                comments: comments[request._id] || "",
+                                comments: comments[request._id] ?? "",
                               },
                               "success"
                             )
@@ -156,7 +156,7 @@ const Roles = () => {
                             handleSubmission(
                               {
                                 requestId: request._id,
-                                comments: comments[request._id] || "",
+                                comments: comments[request._id] ?? "",
                               },
                               "reject"
                             )

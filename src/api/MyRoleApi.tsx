@@ -88,7 +88,7 @@ export const useGetRoleRequest = () => {
     refetchInterval: (query) => {
       return query?.request?.status === "pending" &&
         query.request.currentRole !== "Owner"
-        ? 15000
+        ? 30000
         : false
     },
   })
@@ -161,8 +161,8 @@ export const useGetAllRoleRequests = () => {
     "all-role-request",
     getAllRoleRequests,
     {
-      refetchOnWindowFocus: true,
-      staleTime: 0,
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60,
       refetchInterval: (query) => {
         return query?.data.some((data) => data.status === "pending")
           ? 5000
@@ -207,11 +207,14 @@ export const useApproveRoleRequest = () => {
     onSuccess: () => {
       toast.success("Role request approved")
       queryClient.invalidateQueries(["role-request"])
+      queryClient.invalidateQueries(["all-role-request"])
     },
     onError: () => {
       toast.error("Failed to approve request")
     },
   })
+
+  console.log(approveRequest)
 
   return { approveRequest, isLoading }
 }
@@ -249,6 +252,7 @@ export const useRejectRoleRequest = () => {
     onSuccess: () => {
       toast.success("Role request rejected")
       queryClient.invalidateQueries(["role-request"])
+      queryClient.invalidateQueries(["all-role-request"])
     },
     onError: () => {
       toast.error("Failed to reject request")

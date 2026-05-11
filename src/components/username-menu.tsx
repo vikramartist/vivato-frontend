@@ -19,7 +19,7 @@ const UsernameMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className="flex w-fit items-center gap-2 rounded-full border px-3 font-bold hover:text-orange-500">
         <img
-          src={user?.picture ?? currentUser?.profile_pic}
+          src={user?.picture}
           alt={user?.given_name}
           className="h-8 w-8 rounded-xl bg-cover"
         />
