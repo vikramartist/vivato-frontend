@@ -50,6 +50,7 @@ type CheckoutSessionRequest = {
     addressLine1: string
     city: string
     country: string
+    contact: string
   }
   restaurantId: string
 }
