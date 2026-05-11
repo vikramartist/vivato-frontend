@@ -214,8 +214,6 @@ export const useApproveRoleRequest = () => {
     },
   })
 
-  console.log(approveRequest)
-
   return { approveRequest, isLoading }
 }
 
