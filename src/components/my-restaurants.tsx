@@ -4,13 +4,14 @@ import Maps from "./maps/map"
 import { hhmmToMinutes } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { useState } from "react"
-import type { LatLngExpression } from "leaflet"
 import { useLocation, useNavigate } from "react-router-dom"
+import type { UserLocation } from "@/pages/map-page"
 
 const MyRestaurants = () => {
   const { getRestaurants, isLoading } = useGetMyRestaurants()
-  const [selectedLocation, setSelectedLocation] =
-    useState<LatLngExpression | null>(null)
+  const [selectedLocation, setSelectedLocation] = useState<UserLocation | null>(
+    null
+  )
 
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<
     string | null
@@ -84,7 +85,7 @@ const MyRestaurants = () => {
                     if (!coords) return null
 
                     const [lng, lat] = coords
-                    setSelectedLocation([lat, lng])
+                    setSelectedLocation({ lat, lng })
                     setSelectedRestaurantId(restaurant._id!)
                   }}
                   className={
