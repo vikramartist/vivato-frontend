@@ -20,7 +20,7 @@ type Props = {
   className: string
 }
 
-type UserLocation = {
+export type UserLocation = {
   lat: number
   lng: number
 }

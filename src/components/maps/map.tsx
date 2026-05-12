@@ -8,11 +8,12 @@ import { getLatLng, hhmmToMinutes } from "@/lib/utils"
 import { Verified } from "lucide-react"
 import FlyToLocation from "./fly-to-location"
 import { useLocation, useNavigate } from "react-router-dom"
+import type { UserLocation } from "@/pages/map-page"
 
 type MapProps = {
   restaurants: Restaurant[]
   className: string
-  location: LatLngExpression | null
+  location: UserLocation | null
 }
 
 const POSITION = [12.9716, 77.5946]
@@ -52,7 +53,7 @@ const Maps = ({ restaurants, className, location }: MapProps) => {
       className={className}
       center={POSITION as LatLngExpression}
     >
-      <FlyToLocation location={location} />
+      <FlyToLocation location={location!} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
