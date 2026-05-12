@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { User } from "@/type"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useMutation, useQuery } from "react-query"
@@ -11,6 +12,10 @@ type CreateUserRequest = {
   profile_pic: string
   role?: string
   contact: string
+  location?: {
+    type?: "Point"
+    coordinates?: [number, number]
+  }
 }
 
 type UpdateMyUserRequest = {
@@ -18,8 +23,12 @@ type UpdateMyUserRequest = {
   addressLine1: string
   city: string
   country: string
-  profile_pic?: string
+  profile_pic: string
   contact: string
+  location?: {
+    type?: "Point"
+    coordinates?: [number, number]
+  }
 }
 
 export const useGetMyUser = () => {
@@ -38,19 +47,15 @@ export const useGetMyUser = () => {
     if (!response.ok) {
       throw new Error("Error fetching user!")
     }
-
-    return response.json()
+    const data: User = await response.json()
+    return data
   }
 
-  const {
-    data: currentUser,
-    isLoading,
-    error,
-  } = useQuery("fetchCurrentUser", getMyUserRequest)
-
-  if (error && currentUser?.email) {
-    console.log("Failed to get user Profile details")
-  }
+  const { data: currentUser, isLoading } = useQuery(
+    "fetchCurrentUser",
+    getMyUserRequest,
+    { refetchOnWindowFocus: true }
+  )
 
   return { currentUser, isLoading }
 }
@@ -105,19 +110,16 @@ export const useUpdateMyUser = () => {
   const {
     mutateAsync: updateUser,
     isLoading,
-    error,
-    isSuccess,
     reset,
-  } = useMutation(updateMyUserRequest)
-
-  if (isSuccess) {
-    toast.success("Profile Updated", { duration: 500 })
-  }
-
-  if (error) {
-    toast.error(error.toString(), { duration: 1000 })
-    reset()
-  }
+  } = useMutation(updateMyUserRequest, {
+    onSuccess: () => {
+      toast.success("Profile Updated", { duration: 500 })
+    },
+    onError: (error: any) => {
+      toast.error(error?.message ?? error.toString(), { duration: 1000 })
+      reset()
+    },
+  })
 
   return { updateUser, isLoading }
 }

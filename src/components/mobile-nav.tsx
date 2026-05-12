@@ -12,9 +12,11 @@ import { useAuth0 } from "@auth0/auth0-react"
 import MobilenavLinks from "./mobile-nav-links"
 import { Spinner } from "./ui/spinner"
 import { useEffect, useState } from "react"
+import { useGetMyUser } from "@/api/MyUserApi"
 
 const MobileNav = () => {
   const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0()
+  const { currentUser } = useGetMyUser()
 
   const [open, setOpen] = useState(false)
 
@@ -43,7 +45,7 @@ const MobileNav = () => {
           {isAuthenticated ? (
             <span className="flex items-center justify-between gap-2 font-bold">
               <img
-                src={user?.picture}
+                src={currentUser?.profile_pic || user?.picture}
                 alt={user?.given_name}
                 className="h-8 w-8 rounded-xl shadow-md"
               />

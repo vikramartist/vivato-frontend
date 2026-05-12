@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -23,6 +25,9 @@ import { useEffect } from "react"
 import PhoneInputWithCountrySelect, {
   isValidPhoneNumber,
 } from "react-phone-number-input"
+import { LucideUpload } from "lucide-react"
+import { toast } from "sonner"
+import { getUserLocation } from "@/lib/utils"
 
 const formSchema = z.object({
   email: z.string().optional(),
@@ -37,7 +42,7 @@ const formSchema = z.object({
     .max(250, "Addressline1 cannot exceed 250 characters"),
   city: z.string().min(1, "City is required"),
   country: z.string().min(1, "Country is required"),
-  profile_pic: z.string().url("Invalid Image URL").optional(),
+  profile_pic: z.string().url("Invalid Image URL"),
 })
 
 export type UserFormData = z.infer<typeof formSchema>
@@ -67,6 +72,21 @@ const UserProfileForm = ({
     form.reset(currentUser)
   }, [currentUser, form])
 
+  const handleUserCreation = async (user: UserFormData) => {
+    const coordinate = await getUserLocation()
+
+    const location = {
+      coordinates: [coordinate.longitude, coordinate.latitude],
+    }
+
+    const payload = {
+      ...user,
+      location,
+    }
+
+    onSave(payload)
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -78,7 +98,10 @@ const UserProfileForm = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(handleUserCreation)}
+          className="space-y-4"
+        >
           <FieldGroup className="flex flex-row items-center justify-between gap-3">
             <Controller
               name="email"
@@ -100,18 +123,66 @@ const UserProfileForm = ({
             <Controller
               name="profile_pic"
               control={form.control}
-              render={() => (
-                <Field className="flex w-[30%]">
-                  <div className="w-full place-items-center items-center space-y-3">
-                    <img
-                      src={user?.picture}
-                      alt={user?.profile}
-                      className="h-15 w-15 rounded-full md:h-18 md:w-18"
-                    />
-                    <FieldLabel className="text-center">Profile</FieldLabel>
-                  </div>
-                </Field>
-              )}
+              render={({ field, fieldState }) => {
+                const openUploadWidget = () => {
+                  window.cloudinary.openUploadWidget(
+                    {
+                      cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+                      uploadPreset: import.meta.env
+                        .VITE_CLOUDINARY_UPLOAD_PRESET,
+                      folder: `vivato/profile/${currentUser?._id}/${currentUser.name}/profile_pic`,
+                      multiple: false,
+                      cropping: true,
+                    },
+                    (err: any, res: any) => {
+                      if (err) {
+                        return
+                      }
+                      if (!err && res.event === "success") {
+                        const url = res.info.secure_url
+
+                        field.onChange(url)
+
+                        toast.success("Profie Image Updated!", {
+                          duration: 500,
+                        })
+                      }
+                    }
+                  )
+                }
+                return (
+                  <Field className="flex w-[30%]">
+                    <div className="relative w-full place-items-center items-center space-y-3">
+                      <FieldDescription>Profile</FieldDescription>
+                      <img
+                        src={field.value}
+                        alt={user?.profile}
+                        className="h-15 w-15 rounded-full md:h-18 md:w-18"
+                      />
+                      <FieldLabel className="text-center">
+                        <div
+                          onClick={openUploadWidget}
+                          className="flex cursor-pointer items-center justify-between gap-2"
+                        >
+                          <span className="text-[10px] md:text-sm">Upload</span>
+                          <span>
+                            <LucideUpload className="h-3.5 w-3.5 md:h-4.5 md:w-4.5" />
+                          </span>
+                        </div>
+                      </FieldLabel>
+                      {fieldState.error?.message && (
+                        <FieldError
+                          className="text-[9px] md:text-sm"
+                          {...field}
+                          aria-invalid
+                        >
+                          Profile is required
+                        </FieldError>
+                      )}
+                    </div>
+                  </Field>
+                )
+              }}
             />
           </FieldGroup>
           <FieldGroup className="flex flex-col items-center justify-between gap-4 md:flex-row">

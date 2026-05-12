@@ -2,13 +2,25 @@ import type { Restaurant } from "@/type"
 import { Link } from "react-router-dom"
 import { AspectRatio } from "../ui/aspect-ratio"
 import { Clock, IndianRupee } from "lucide-react"
-import { cn, hhmmToMinutes } from "@/lib/utils"
+import { cn, getDistanceInKm, hhmmToMinutes } from "@/lib/utils"
+import { useGetMyUser } from "@/api/MyUserApi"
 
 type Props = {
   restaurant: Restaurant
 }
 
 const SearchCard = ({ restaurant }: Props) => {
+  const { currentUser } = useGetMyUser()
+
+  const calculateDistance = () => {
+    return getDistanceInKm(
+      currentUser?.location?.coordinates[1] as number,
+      currentUser?.location?.coordinates[0] as number,
+      restaurant.location?.coordinates?.[1] as number,
+      restaurant.location?.coordinates?.[0] as number
+    )
+  }
+
   return (
     <Link
       to={`/details/${restaurant._id}`}
@@ -55,12 +67,12 @@ const SearchCard = ({ restaurant }: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex w-full items-end justify-between space-y-2">
-        {restaurant.distance && (
-          <span className="text-[9px] md:text-[13px]">
-            {((restaurant.distance as number) / 1000).toFixed(2)} kms away
-          </span>
-        )}
+      <div className="flex w-full items-center justify-between gap-2 space-y-2 md:items-end">
+        <span
+          className={cn("flex items-center gap-3 text-[9px] md:text-[13px]")}
+        >
+          {calculateDistance().toFixed(2)} kms away
+        </span>
         <span
           className={cn(
             "rounded-lg border px-1 text-[9px] text-white md:text-[13px]",

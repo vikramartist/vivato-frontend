@@ -1,4 +1,3 @@
-import type { LatLngExpression } from "leaflet"
 import { useEffect } from "react"
 import { useMap } from "react-leaflet"
 
@@ -6,7 +5,7 @@ const FlyToLocation = ({
   location,
   zoomLevel = 18,
 }: {
-  location: LatLngExpression | null
+  location: { lat: number; lng: number }
   zoomLevel?: number
 }) => {
   const map = useMap()
@@ -16,9 +15,9 @@ const FlyToLocation = ({
 
     if (!map || !map.getCenter()) return
     if (location) {
-      map.flyTo(location, zoomLevel, { duration: 1.5 })
+      map.flyTo([location.lat, location.lng], zoomLevel, { duration: 1.5 })
     }
-  }, [location, map])
+  }, [location.lat, location.lng, zoomLevel])
 
   return null
 }

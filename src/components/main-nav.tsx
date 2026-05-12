@@ -9,6 +9,7 @@ import AdminDashboard from "./admin/admin-dashboard"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Home, MapPinHouse, ShoppingBag } from "lucide-react"
+import type { User } from "@/type"
 
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0()
@@ -58,7 +59,7 @@ const MainNav = () => {
             </div>
           </Button>
 
-          <UsernameMenu />
+          <UsernameMenu currentUser={currentUser as User} />
         </>
       ) : (
         <Button

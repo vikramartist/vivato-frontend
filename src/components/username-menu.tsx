@@ -9,18 +9,20 @@ import { useNavigate } from "react-router-dom"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import { HotelIcon, LogOut, UserIcon } from "lucide-react"
-import { useGetMyUser } from "@/api/MyUserApi"
+import type { User } from "@/type"
 
-const UsernameMenu = () => {
-  const { user, logout } = useAuth0()
-  const { currentUser } = useGetMyUser()
+const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
+  const { logout } = useAuth0()
   const navigate = useNavigate()
+
+  if (!currentUser) return null
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex w-fit items-center gap-2 rounded-full border px-3 font-bold hover:text-orange-500">
         <img
-          src={user?.picture}
-          alt={user?.given_name}
+          src={currentUser?.profile_pic}
+          alt={currentUser?.profile_pic}
           className="h-8 w-8 rounded-xl bg-cover"
         />
       </DropdownMenuTrigger>

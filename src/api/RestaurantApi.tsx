@@ -1,8 +1,45 @@
 import type { SearchState } from "@/pages/search-page"
 import type { Restaurant, RestaurantSearchResponse } from "@/type"
-import { useQuery } from "react-query"
+import { useMutation, useQuery } from "react-query"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
+
+type RouteType = {
+  source: { lng: number; lat: number }
+  target: { lng: number; lat: number }
+}
+
+export type RouteResponse = {
+  distance: number
+  duration: number
+  geometry: string
+}
+
+export const useGetRestaurantRoute = () => {
+  const getRestaurantRoute = async ({
+    source,
+    target,
+  }: RouteType): Promise<RouteResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/restaurant/route`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ source, target }),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to get the restaurant route")
+    }
+
+    return response.json()
+  }
+
+  const { mutateAsync: getRestaurantDirection, isLoading } =
+    useMutation(getRestaurantRoute)
+
+  return { getRestaurantDirection, isLoading }
+}
 
 export const useGetAllRestaurants = () => {
   const getAllRestaurantsRequest = async (): Promise<Restaurant[]> => {

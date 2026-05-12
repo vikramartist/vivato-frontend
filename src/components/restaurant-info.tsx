@@ -6,20 +6,16 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card"
-import { getLatLng, hhmmToMinutes } from "@/lib/utils"
+import { hhmmToMinutes } from "@/lib/utils"
 import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
-import { ClockFading, LucideIndianRupee, Timer } from "lucide-react"
+import { ClockFading, LucideIndianRupee, PhoneCall, Timer } from "lucide-react"
 
 type Props = {
   restaurant: Restaurant
 }
 
 const RestaurantInfo = ({ restaurant }: Props) => {
-  const { "0": lng, "1": lat } = getLatLng(
-    restaurant.location?.coordinates as [number, number]
-  )
-
   return (
     <Card className="border-sla gap-2">
       <CardHeader>
@@ -35,14 +31,17 @@ const RestaurantInfo = ({ restaurant }: Props) => {
             {restaurant.zipCode}
           </p>
           <div className="flex flex-row items-center justify-between">
-            <span className="text-[9px] tracking-tight md:text-[13px]">
-              Coordinates: [{lat}, {lng}]
+            <span className="cursor-pointer text-[9px] tracking-tight md:text-[13px]">
+              <span className="flex items-center gap-2">
+                <PhoneCall className="h-3.5 w-3.5 text-orange-500 md:h-4.5 md:w-4.5" />
+                {restaurant.contact}
+              </span>
             </span>
             <Link
               to={`/restaurants/maps/${restaurant._id}`}
-              className="text-[9px] tracking-tight text-blue-500 hover:underline md:text-[13px]"
+              className="text-[9px] tracking-tight text-blue-500 underline md:text-[13px]"
             >
-              View on Map
+              Get Directions
             </Link>
           </div>
         </CardDescription>
@@ -60,7 +59,7 @@ const RestaurantInfo = ({ restaurant }: Props) => {
             </span>
           ))}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-wrap items-center gap-2">
           <ClockFading className="text-[8px] text-orange-500 md:text-[13px] dark:text-green-500" />
           <span className="text-[8px] font-light md:text-sm">
             {hhmmToMinutes(restaurant.openingTime)} -{" "}
