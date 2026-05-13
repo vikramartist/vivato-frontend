@@ -50,7 +50,13 @@ const MobilenavLinks = () => {
         Profile
       </Button>
       <Button
-        onClick={() => logout()}
+        onClick={() =>
+          logout({
+            logoutParams: {
+              returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
+            },
+          })
+        }
         variant={"link"}
         size={"sm"}
         className="flex items-center px-3 text-[10px] font-bold text-orange-500 md:text-sm dark:text-white"

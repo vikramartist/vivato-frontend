@@ -54,7 +54,13 @@ const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
         <Separator />
         <DropdownMenuItem>
           <Button
-            onClick={() => logout()}
+            onClick={() =>
+              logout({
+                logoutParams: {
+                  returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
+                },
+              })
+            }
             className="flex flex-1 bg-orange-500 font-bold"
           >
             <LogOut />
