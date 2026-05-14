@@ -148,7 +148,7 @@ const MapPage = ({ restaurantId, restaurants, className }: Props) => {
 
         {restaurantId && restaurant?.location?.coordinates ? (
           <FlyToLocation
-            location={getLatLng(restaurant.location.coordinates)}
+            location={getLatLng(restaurant?.location?.coordinates)}
             zoomLevel={15}
           />
         ) : !restaurantId && restaurants && restaurants?.length ? (
@@ -156,7 +156,7 @@ const MapPage = ({ restaurantId, restaurants, className }: Props) => {
             location={getLatLng(
               restaurants.at(0)?.location?.coordinates as [number, number]
             )}
-            zoomLevel={12}
+            zoomLevel={15}
           />
         ) : userLocation ? (
           <FlyToLocation location={userLocation!} zoomLevel={12} />

@@ -36,9 +36,10 @@ const minutesToHHMM = (minutes: number) => {
     .padStart(2, "0")}`
 }
 
-export const getLatLng = (
-  coords: [number, number]
-): { lat: number; lng: number } => {
+export const getLatLng = (coords?: number[]): { lat: number; lng: number } => {
+  if (!coords || coords.length < 2 || coords[0] == null || coords[1] == null) {
+    return { lat: 12.9716, lng: 77.5946 }
+  }
   return { lat: coords[1], lng: coords[0] }
 }
 

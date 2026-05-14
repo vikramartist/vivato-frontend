@@ -15,7 +15,7 @@ const FlyToLocation = ({
 
     if (!map || !map.getCenter()) return
     if (location) {
-      map.flyTo([location?.lat, location?.lng], zoomLevel, { duration: 1.5 })
+      map.flyTo([location?.lat, location?.lng], zoomLevel, { duration: 10 })
     }
   }, [location?.lat, location?.lng, zoomLevel])
 

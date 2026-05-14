@@ -53,7 +53,7 @@ const Maps = ({ restaurants, className, location }: MapProps) => {
       className={className}
       center={POSITION as LatLngExpression}
     >
-      <FlyToLocation location={location!} />
+      <FlyToLocation location={location!} zoomLevel={17} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -62,9 +62,7 @@ const Maps = ({ restaurants, className, location }: MapProps) => {
         {restaurants.map((restaurantCoordinates) => (
           <Marker
             key={`${restaurantCoordinates._id}-${restaurantCoordinates.restaurantName}`}
-            position={getLatLng(
-              restaurantCoordinates.location?.coordinates as [number, number]
-            )}
+            position={getLatLng(restaurantCoordinates.location?.coordinates)}
             icon={getCustomUrl(restaurantCoordinates.imageUrl)}
           >
             <Popup>

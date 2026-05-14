@@ -81,7 +81,6 @@ const MyRestaurants = () => {
                   key={restaurant._id}
                   onClick={() => {
                     const coords = restaurant.location?.coordinates
-                    console.log(coords)
                     if (!coords) return null
 
                     const [lng, lat] = coords
