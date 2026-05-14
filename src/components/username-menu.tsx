@@ -12,16 +12,16 @@ import { HotelIcon, LogOut, UserIcon } from "lucide-react"
 import type { User } from "@/type"
 
 const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
-  const { logout } = useAuth0()
+  const { logout, user } = useAuth0()
   const navigate = useNavigate()
 
   if (!currentUser) return null
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex w-fit items-center gap-2 rounded-full border px-3 font-bold hover:text-orange-500">
+      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border px-3 font-bold hover:text-orange-500">
         <img
-          src={currentUser?.profile_pic}
+          src={currentUser?.profile_pic || user?.picture}
           alt={currentUser?.profile_pic}
           className="h-8 w-8 rounded-xl bg-cover"
         />
