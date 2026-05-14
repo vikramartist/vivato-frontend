@@ -37,12 +37,14 @@ const UserProfilePage = () => {
         >
           My Profile
         </TabsTrigger>
-        <TabsTrigger
-          className="text-[9px] tracking-wide md:text-sm"
-          value={`rider-profile`}
-        >
-          Rider Profile
-        </TabsTrigger>
+        {currentUser.role === "Rider" && (
+          <TabsTrigger
+            className="text-[9px] tracking-wide md:text-sm"
+            value={`rider-profile`}
+          >
+            Rider Profile
+          </TabsTrigger>
+        )}
       </TabsList>
       <TabsContent
         value="main-profile"
