@@ -9,7 +9,7 @@ type CreateUserRoleRequest = {
   email?: string
   name?: string
   fullAddress: string
-  requestedRole?: string
+  requestedRole: "Owner" | "Rider" | "Customer"
   currentRole?: string
   status?: "pending" | "approved" | "declined"
   reason: string
@@ -20,7 +20,7 @@ type CreateUserRoleRequest = {
 type RoleRequest = {
   id: string
   status: "pending" | "approved" | "declined"
-  requestedRole?: string
+  requestedRole: "Owner" | "Rider"
   currentRole?: string
   fullAddress: string
   documents: boolean
@@ -60,6 +60,7 @@ type AllRoleRequests = {
 type ApproveOrRejectRequestInput = {
   requestId: string
   comments: string
+  requestedRole?: string
 }
 
 export const useGetRoleRequest = () => {
@@ -87,7 +88,8 @@ export const useGetRoleRequest = () => {
     staleTime: 0,
     refetchInterval: (query) => {
       return query?.request?.status === "pending" &&
-        query.request.currentRole !== "Owner"
+        query.request.currentRole !== "Owner" &&
+        query.request.currentRole !== "Rider"
         ? 30000
         : false
     },
@@ -118,18 +120,21 @@ export const useCreateRoleRequest = () => {
 
   const queryClient = useQueryClient()
 
-  const { mutateAsync: createRequest, isLoading } = useMutation(
-    createRoleRequest,
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries("role-request")
-        toast.success("Request for role change Successfull")
-      },
-      onError: () => {
-        toast.error("Request role Change request Failed")
-      },
-    }
-  )
+  const {
+    mutateAsync: createRequest,
+    isLoading,
+    reset,
+  } = useMutation(createRoleRequest, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("role-request")
+      toast.success("Request for role change Successfull")
+      reset()
+    },
+    onError: () => {
+      toast.error("Request role Change request Failed")
+      reset()
+    },
+  })
 
   return { createRequest, isLoading }
 }
@@ -179,6 +184,7 @@ export const useApproveRoleRequest = () => {
   const approveRoleRequest = async ({
     requestId,
     comments,
+    requestedRole,
   }: ApproveOrRejectRequestInput) => {
     const accessToken = await getAccessTokenSilently()
     const response = await fetch(
@@ -189,7 +195,7 @@ export const useApproveRoleRequest = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ comments }),
+        body: JSON.stringify({ comments, requestedRole }),
       }
     )
 
@@ -245,15 +251,21 @@ export const useRejectRoleRequest = () => {
 
   const queryClient = useQueryClient()
 
-  const { mutateAsync: rejectRequest, isLoading } = useMutation({
+  const {
+    mutateAsync: rejectRequest,
+    isLoading,
+    reset,
+  } = useMutation({
     mutationFn: rejectRoleRequest,
     onSuccess: () => {
       toast.success("Role request rejected")
       queryClient.invalidateQueries(["role-request"])
       queryClient.invalidateQueries(["all-role-request"])
+      reset()
     },
     onError: () => {
       toast.error("Failed to reject request")
+      reset()
     },
   })
 

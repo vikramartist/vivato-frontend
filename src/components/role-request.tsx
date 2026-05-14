@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Info, Store } from "lucide-react"
+import { Bike, Info, LucideHotel, Store } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
 } from "./ui/dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { Button } from "./ui/button"
-import { Field, FieldGroup, FieldLabel } from "./ui/field"
+import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field"
 import z from "zod"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -23,6 +23,14 @@ import { useGetMyUser } from "@/api/MyUserApi"
 import { useEffect } from "react"
 import type { RoleRequestType } from "@/type"
 import { toast } from "sonner"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu"
 
 const roleRequestSchema = z.object({
   email: z.string().optional(),
@@ -33,7 +41,9 @@ const roleRequestSchema = z.object({
     .max(250, "Address cannot exceed 250 characters"),
   reason: z.string().min(1, "Reason is required"),
   documents: z.boolean(),
-  requestedRole: z.string().optional(),
+  requestedRole: z
+    .enum(["Owner", "Rider", "Customer"])
+    .describe("Role must be either Rider or Owner and is required"),
   feedback: z.string().optional(),
   currentRole: z.string().optional(),
 })
@@ -61,9 +71,8 @@ const RoleRequest = ({
     resolver: zodResolver(roleRequestSchema),
     defaultValues: {
       email: "",
-      requestedRole: "Owner",
       currentRole: "",
-      documents: false,
+      requestedRole: "Customer",
       name: "",
       fullAddress: "",
       feedback: "",
@@ -71,10 +80,14 @@ const RoleRequest = ({
     },
   })
 
+  const role = form.watch("requestedRole")
+  const toastKey = `role-toast-${roleData?.id}`
+
   const onSubmit = (data: RoleRequestFormData) => {
+    if (data.requestedRole === "Customer") return
+
     onRequest({
       ...data,
-      requestedRole: "Owner",
       currentRole: currentUser?.role,
     })
   }
@@ -82,17 +95,32 @@ const RoleRequest = ({
   useEffect(() => {
     if (!roleData) return
 
-    if (roleData.status === "approved" && roleData.currentRole === "Owner") {
-      toast.success(
-        "Horray!, you have been promoted to Owner, now you can create and own your restaurants. Happy Vivatoing!🎉🎊"
-      )
+    const alreadyShown = sessionStorage.getItem(toastKey)
+
+    if (alreadyShown) return
+
+    if (roleData.status === "approved") {
+      if (roleData.currentRole === "Owner") {
+        toast.success(
+          "Horray!, you have been promoted to Owner, now you can create and own your restaurants. Happy Vivatoing!🎉🎊",
+          { duration: 500 }
+        )
+      } else if (roleData.currentRole === "Rider") {
+        toast.success(
+          "Horray!, you have been promoted to Rider, now you can accept and deliver orders. Happy Vivatoing!🎉🎊",
+          { duration: 500 }
+        )
+      }
     }
 
     if (roleData.status === "declined") {
       toast.warning(
-        "Oh Oh, you're request for role change has been declined. Try raising the request again!. Reason has been mailed to you"
+        "Oh Oh, you're request for role change has been declined. Try raising the request again!. Reason has been mailed to you",
+        { duration: 500 }
       )
     }
+
+    sessionStorage.setItem(toastKey, "shown")
   }, [roleData?.status, roleData?.currentRole])
 
   useEffect(() => {
@@ -125,16 +153,30 @@ const RoleRequest = ({
                     : "bg-red-400 hover:bg-red-400 dark:bg-red-200 dark:hover:bg-red-200"
               )}
             >
-              <Store
-                className={cn(
-                  roleStatus === "pending"
-                    ? "bg-gray-400 text-white dark:bg-gray-200 dark:text-white"
-                    : roleStatus === "approved"
-                      ? "bg-green-400 text-white dark:bg-green-200 dark:text-white"
-                      : "bg-red-400 text-white dark:bg-red-200 dark:text-white",
-                  "dark:opacity-100"
-                )}
-              />
+              {roleData.requestedRole === "Rider" && (
+                <Bike
+                  className={cn(
+                    roleStatus === "pending"
+                      ? "bg-gray-400 text-white dark:bg-gray-200 dark:text-white"
+                      : roleStatus === "approved"
+                        ? "bg-green-400 text-white dark:bg-green-200 dark:text-white"
+                        : "bg-red-400 text-white dark:bg-red-200 dark:text-white",
+                    "dark:opacity-100"
+                  )}
+                />
+              )}
+              {roleData.requestedRole === "Owner" && (
+                <LucideHotel
+                  className={cn(
+                    roleStatus === "pending"
+                      ? "bg-gray-400 text-white dark:bg-gray-200 dark:text-white"
+                      : roleStatus === "approved"
+                        ? "bg-green-400 text-white dark:bg-green-200 dark:text-white"
+                        : "bg-red-400 text-white dark:bg-red-200 dark:text-white",
+                    "dark:opacity-100"
+                  )}
+                />
+              )}
             </Button>
           </div>
         </TooltipTrigger>
@@ -151,7 +193,8 @@ const RoleRequest = ({
             <div className="flex items-center justify-center gap-2">
               <Info className="h-3 w-3 text-white dark:text-green-500" />
               <span className="text-[12px] font-semibold tracking-tight text-white dark:text-gray-600">
-                Your role change request has been approved. Happy Vivatoing!
+                Your role change request has been approved and you are a{" "}
+                {roleData?.currentRole}. Happy Vivatoing!
               </span>
             </div>
           ) : (
@@ -185,7 +228,7 @@ const RoleRequest = ({
                 </div>
               </TooltipTrigger>
               <TooltipContent className="bg-black dark:bg-white">
-                Want to become an Owner!
+                Want to become an Owner/Rider!
               </TooltipContent>
             </Tooltip>
           </div>
@@ -198,7 +241,7 @@ const RoleRequest = ({
               </DialogTitle>
               <DialogDescription className="text-[12px] md:text-[14px]">
                 Make a request for your role change from{" "}
-                <strong>Customer</strong> to <strong>Owner</strong> here. Click
+                <strong>Customer</strong> to <strong>{role}</strong> here. Click
                 'Request' when you are done
               </DialogDescription>
             </DialogHeader>
@@ -222,7 +265,7 @@ const RoleRequest = ({
               <Controller
                 name="name"
                 control={form.control}
-                render={() => (
+                render={({ fieldState }) => (
                   <Field>
                     <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
                       Name
@@ -232,6 +275,9 @@ const RoleRequest = ({
                       disabled={!!currentUser?.name}
                       value={currentUser?.name}
                     />
+                    <FieldError className="text-[8px] tracking-wide md:text-[13px]">
+                      {fieldState.error?.message}
+                    </FieldError>
                   </Field>
                 )}
               />
@@ -240,7 +286,7 @@ const RoleRequest = ({
               <Controller
                 control={form.control}
                 name="fullAddress"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <Field>
                     <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
                       Address
@@ -260,6 +306,9 @@ const RoleRequest = ({
                       placeholder="Enter your address"
                       className="bg-white text-[12px] tracking-tight placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
                     />
+                    <FieldError className="text-[8px] tracking-wide md:text-[13px]">
+                      {fieldState.error?.message}
+                    </FieldError>
                   </Field>
                 )}
               />
@@ -268,7 +317,7 @@ const RoleRequest = ({
               <Controller
                 control={form.control}
                 name="reason"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <Field>
                     <FieldLabel className="text-[10px] tracking-tight md:text-[12px]">
                       Reason for change{" "}
@@ -286,6 +335,9 @@ const RoleRequest = ({
                       placeholder="Reason for your role change"
                       className="no-scrollbar h-4 overflow-y-scroll text-[12px] placeholder:text-[9px] md:text-[13px] placeholder:md:text-[12px]"
                     />
+                    <FieldError className="text-[8px] tracking-wide md:text-[13px]">
+                      {fieldState.error?.message}
+                    </FieldError>
                   </Field>
                 )}
               />
@@ -294,7 +346,7 @@ const RoleRequest = ({
               <Controller
                 control={form.control}
                 name="requestedRole"
-                render={() => (
+                render={({ field, fieldState }) => (
                   <Field className="w-[80%]">
                     <FieldLabel className="flex items-center text-[10px] tracking-tight md:text-[12px]">
                       Role
@@ -303,15 +355,47 @@ const RoleRequest = ({
                           <Info className="h-3 w-3 text-orange-500" />
                         </TooltipTrigger>
                         <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
-                          By default the role is changed to Owner
+                          Choose a role from the dropdown
                         </TooltipContent>
                       </Tooltip>
                     </FieldLabel>
-                    <Input
-                      disabled
-                      className="text-[8px] md:text-[12px]"
-                      value={"Owner"}
-                    />
+                    <DropdownMenu>
+                      <div>
+                        <DropdownMenuTrigger asChild>
+                          <div>
+                            <Button
+                              variant={"outline"}
+                              defaultValue={field.value}
+                              className="md:;text-sm text-[9px]"
+                            >
+                              {field.value ?? "Select Role"}
+                            </Button>
+                          </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-full">
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel className="text-[9px] md:text-[13px]">
+                              Select Role
+                            </DropdownMenuLabel>
+                            <DropdownMenuItem
+                              onClick={() => field.onChange("Owner")}
+                              className="text-[9px] md:text-[13px]"
+                            >
+                              Owner
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => field.onChange("Rider")}
+                              className="text-[9px] md:text-[13px]"
+                            >
+                              Rider
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </div>
+                    </DropdownMenu>
+                    <FieldError className="text-[8px] tracking-wide md:text-[13px]">
+                      {fieldState.error?.message}
+                    </FieldError>
                   </Field>
                 )}
               />
@@ -320,7 +404,7 @@ const RoleRequest = ({
               <Controller
                 control={form.control}
                 name="documents"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <Field className="w-4">
                     <FieldLabel className="flex items-center gap-2">
                       <span className="text-[9px] tracking-tight md:text-[12px]">
@@ -331,16 +415,26 @@ const RoleRequest = ({
                           <Info className="h-3 w-3 text-orange-500" />
                         </TooltipTrigger>
                         <TooltipContent className="text-[10px] md:text-[10px] dark:bg-gray-100">
-                          Do you have all the required documents? (PAN Card +
-                          Aaadhar Card + Hotel License )
+                          {role === "Owner"
+                            ? `Do you have all the required documents? (PAN Card +
+                          Aaadhar Card + Hotel License )`
+                            : `Do you have the insurance papers and all documents of the vehicle you own, if yes, then proceed with role request, else dont proceed with request`}
                         </TooltipContent>
                       </Tooltip>
                     </FieldLabel>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="border-orange-500"
+                      className={cn(
+                        "border-orange-500",
+                        fieldState.error?.message && "border-red-500"
+                      )}
                     />
+                    {fieldState.error?.message && (
+                      <FieldError className="w-full text-[8px] tracking-wide md:text-[12px]">
+                        Documents required
+                      </FieldError>
+                    )}
                   </Field>
                 )}
               />

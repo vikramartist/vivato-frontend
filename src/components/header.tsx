@@ -10,8 +10,15 @@ import AdminDashboard from "./admin/admin-dashboard"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { Button } from "./ui/button"
-import { Home, LucideBuilding2, MapPinHouse } from "lucide-react"
+import {
+  CheckCircle2Icon,
+  Dot,
+  Home,
+  LucideBuilding2,
+  MapPinHouse,
+} from "lucide-react"
 import { getUserLocation } from "@/lib/utils"
+import { Badge } from "./ui/badge"
 
 const Header = () => {
   const { isAuthenticated } = useAuth0()
@@ -50,6 +57,20 @@ const Header = () => {
             </TooltipContent>
           </Tooltip>
         </div>
+        {isAuthenticated ? (
+          <Badge
+            className="flex w-18 items-center justify-center gap-3 bg-green-800"
+            variant={"outline"}
+          >
+            <span className="text-[11px] text-white md:text-sm">Online</span>
+            <div className="relative flex items-center justify-center">
+              <span className="absolute h-3 w-3 animate-ping rounded-full bg-green-500 opacity-75" />
+              <span className="absolute h-2 w-2 rounded-full bg-green-500" />
+            </div>
+          </Badge>
+        ) : (
+          <Badge>Offline</Badge>
+        )}
         <div className="flex items-center gap-2 px-2 md:hidden">
           <Tooltip>
             <TooltipTrigger asChild>
