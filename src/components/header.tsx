@@ -10,13 +10,7 @@ import AdminDashboard from "./admin/admin-dashboard"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { Button } from "./ui/button"
-import {
-  CheckCircle2Icon,
-  Dot,
-  Home,
-  LucideBuilding2,
-  MapPinHouse,
-} from "lucide-react"
+import { Home, LucideBuilding2, MapPinHouse } from "lucide-react"
 import { getUserLocation } from "@/lib/utils"
 import { Badge } from "./ui/badge"
 
