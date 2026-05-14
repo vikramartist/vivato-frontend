@@ -34,14 +34,15 @@ const Roles = () => {
   type Submission = {
     requestId: string
     comments: string
+    requestedRole?: string
   }
 
   const handleSubmission = (
-    { requestId, comments }: Submission,
+    { requestId, comments, requestedRole }: Submission,
     submissionType: string
   ) => {
     if (submissionType === "success") {
-      approveRequest({ requestId, comments })
+      approveRequest({ requestId, comments, requestedRole })
     } else {
       rejectRequest({ requestId, comments })
     }
@@ -100,6 +101,7 @@ const Roles = () => {
           {getAllRequests?.data.map((request) => (
             <>
               {request.currentRole === "Owner" ||
+                request.currentRole === "Rider" ||
                 (request.status !== "declined" && (
                   <TableRow
                     key={`${request._id}-${request.userId}`}
@@ -142,6 +144,7 @@ const Roles = () => {
                               {
                                 requestId: request._id,
                                 comments: comments[request._id] ?? "",
+                                requestedRole: request.requestedRole as string,
                               },
                               "success"
                             )

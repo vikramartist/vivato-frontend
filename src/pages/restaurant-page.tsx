@@ -18,7 +18,7 @@ const RestaurantPage = () => {
 
   return (
     <Tabs className="w-full" defaultValue="my-orders">
-      <TabsList className="mx-auto gap-2 md:w-[50%]">
+      <TabsList className="mx-auto w-[90%] gap-2 md:w-[50%]">
         <TabsTrigger
           className={cn("text-[9px] tracking-wide md:text-sm")}
           value="my-restaurants"

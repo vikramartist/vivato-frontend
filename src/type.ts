@@ -18,7 +18,7 @@ export type User = {
 export type RoleRequestType = {
   id: string
   status: string
-  requestedRole: string
+  requestedRole: "Owner" | "Rider"
   currentRole: string
   fullAddress: string
   documents: boolean
@@ -87,6 +87,17 @@ export type OrderStatus =
   | "delivered"
   | "cancelled"
 
+export type Weekdays =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+
+export type VehicleType = "Bike" | "Scooter" | "EV-Bike" | "EV-Scooter"
+
 export type Order = {
   _id: string
   restaurant: Restaurant
@@ -111,4 +122,19 @@ export type Order = {
   status: OrderStatus
   createdAt: string
   restaurantId: string
+}
+
+export type Rider = {
+  riderId?: string
+  experience: number
+  isAvailable?: boolean
+  vehicleNumber: string
+  drivingLicenseNumber: string
+  vehicleType: VehicleType
+  currentLocation?: {
+    coordinates: { lng: number; lat: number }
+  }
+  deliveryRadiusKm: number
+  workHours: { start: string; end: string }
+  workingDays: Weekdays[]
 }
