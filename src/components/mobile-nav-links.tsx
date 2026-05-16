@@ -3,11 +3,25 @@ import { Button } from "./ui/button"
 import { useNavigate } from "react-router-dom"
 import { useGetMyUser } from "@/api/MyUserApi"
 import { LogOut, ShoppingBag, User, Utensils } from "lucide-react"
+import { socket } from "@/socket"
 
 const MobilenavLinks = () => {
   const { logout } = useAuth0()
   const navigate = useNavigate()
   const { currentUser } = useGetMyUser()
+
+  const handleLogout = () => {
+    socket.emit("rider-offline", () => {
+      console.log("logging out")
+      socket.disconnect()
+      logout({
+        logoutParams: {
+          returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
+        },
+      })
+    })
+  }
+
   return (
     <>
       {currentUser?.role === "Admin" && (
@@ -38,7 +52,7 @@ const MobilenavLinks = () => {
         size={"sm"}
       >
         <ShoppingBag />
-        Order Status
+        {currentUser?.role === "Rider" ? "My Orders" : "Order Status"}
       </Button>
       <Button
         onClick={() => navigate("/user-profile")}
@@ -50,13 +64,7 @@ const MobilenavLinks = () => {
         Profile
       </Button>
       <Button
-        onClick={() =>
-          logout({
-            logoutParams: {
-              returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
-            },
-          })
-        }
+        onClick={handleLogout}
         variant={"link"}
         size={"sm"}
         className="flex items-center px-3 text-[10px] font-bold text-orange-500 md:text-sm dark:text-white"

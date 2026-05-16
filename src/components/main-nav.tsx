@@ -54,7 +54,7 @@ const MainNav = () => {
                 to={"/order-status"}
                 className="font-semibold hover:text-orange-500 dark:hover:text-white"
               >
-                Order Status
+                {currentUser?.role === "Rider" ? "My Orders" : "Order Status"}
               </Link>
             </div>
           </Button>

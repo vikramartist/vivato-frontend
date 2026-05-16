@@ -7,7 +7,7 @@ export type User = {
   city: string
   profile_pic: string
   country: string
-  role: string
+  role: "Rider" | "Customer" | "Owner" | "Admin"
   contact: string
   location?: {
     type: "Point"

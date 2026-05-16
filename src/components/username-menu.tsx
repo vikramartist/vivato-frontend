@@ -10,6 +10,7 @@ import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
 import { HotelIcon, LogOut, UserIcon } from "lucide-react"
 import type { User } from "@/type"
+import { socket } from "@/socket"
 
 const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
   const { logout, user } = useAuth0()
@@ -17,13 +18,24 @@ const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
 
   if (!currentUser) return null
 
+  const handleLogout = () => {
+    socket.emit("rider-offline", () => {
+      socket.disconnect()
+      logout({
+        logoutParams: {
+          returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
+        },
+      })
+    })
+  }
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border px-3 font-bold hover:text-orange-500">
+      <DropdownMenuTrigger className="flex items-center gap-2 font-bold hover:text-orange-500">
         <img
-          src={currentUser?.profile_pic || user?.picture}
+          src={user?.picture ?? currentUser.profile_pic}
           alt={currentUser?.profile_pic}
-          className="h-8 w-8 rounded-xl bg-cover"
+          className="h-8 w-8 rounded-full bg-cover"
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full">
@@ -54,13 +66,7 @@ const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
         <Separator />
         <DropdownMenuItem>
           <Button
-            onClick={() =>
-              logout({
-                logoutParams: {
-                  returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
-                },
-              })
-            }
+            onClick={handleLogout}
             className="flex flex-1 bg-orange-500 font-bold"
           >
             <LogOut />

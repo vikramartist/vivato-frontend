@@ -30,7 +30,10 @@ const formSchema = z.object({
   vehicleType: z.enum(["Bike", "Scooter", "EV-Bike", "EV-Scooter"], {
     message: "Vehicle type is required",
   }),
-  experience: z.coerce.number<number>().nonnegative(),
+  experience: z.coerce
+    .number<number>()
+    .nonnegative()
+    .max(40, { error: "Experience cannot be more than 40" }),
   isAvailable: z.boolean().optional(),
   vehicleNumber: z
     .string()

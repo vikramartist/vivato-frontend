@@ -7,7 +7,7 @@ import {
 import UserProfileForm from "@/forms/UserProfileForm/user-profile-form"
 import { Spinner } from "./ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
-import RoleProfileForm from "@/forms/UserProfileForm/role-profile-form"
+import RoleProfileForm from "@/forms/UserProfileForm/rider-profile-form"
 
 const UserProfilePage = () => {
   const { currentUser, isLoading: isGetLoading } = useGetMyUser()

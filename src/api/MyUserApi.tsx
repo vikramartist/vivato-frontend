@@ -10,7 +10,7 @@ type CreateUserRequest = {
   auth0Id: string
   email: string
   profile_pic: string
-  role?: string
+  role?: "Rider" | "Owner" | "Customer" | "Admin"
   contact: string
   location?: {
     type?: "Point"
@@ -71,6 +71,7 @@ export const useGetRiderProfile = () => {
     getMyRiderProfileRequest,
     {
       refetchOnWindowFocus: true,
+      refetchInterval: 5000,
     }
   )
 
