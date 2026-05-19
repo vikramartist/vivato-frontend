@@ -89,23 +89,23 @@ const Header = () => {
               </Badge>
             </div>
           )}
+          {currentUser?.role === "Customer" && (
+            <div className="w-full items-start justify-between">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant={"outline"} onClick={handleLocationClick}>
+                    <LucideBuilding2 className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4 dark:text-white" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-[9px] md:text-sm">
+                    Find Restaurants near me
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          )}
         </div>
-        {currentUser?.role === "Customer" && (
-          <div className="w-full items-start justify-between">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant={"outline"} onClick={handleLocationClick}>
-                  <LucideBuilding2 className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4 dark:text-white" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-[9px] md:text-sm">
-                  Find Restaurants near me
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        )}
 
         <div className="flex items-center gap-2 px-2 md:hidden">
           <Tooltip>

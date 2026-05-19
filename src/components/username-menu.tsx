@@ -25,6 +25,8 @@ const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
           returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
         },
       })
+
+      return
     }
 
     socket.emit("rider-offline", () => {
@@ -42,7 +44,7 @@ const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
       <DropdownMenuTrigger className="flex items-center gap-2 font-bold hover:text-orange-500">
         <img
           src={user?.picture ?? currentUser.profile_pic}
-          alt={currentUser?.profile_pic}
+          alt={currentUser?.name}
           className="h-8 w-8 rounded-full bg-cover"
         />
       </DropdownMenuTrigger>

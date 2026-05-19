@@ -12,18 +12,21 @@ import {
 } from "../ui/select"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useMemo, useState } from "react"
-import OrderActiveCardItem from "./order-card-item"
+import OrderCardItem from "./order-card-item"
 import {
   useGetMyRestaurantOrders,
   useUpdateMyRestaurantOrderStatus,
 } from "@/api/MyRestaurantApi"
 import { useParams } from "react-router-dom"
+import { useGetMyUser } from "@/api/MyUserApi"
 
 const ManageOrderForm = () => {
   const isMobile = useIsMobile()
   const { restaurantId } = useParams()
   const { isLoading, updateRestaurantOrderStatus } =
     useUpdateMyRestaurantOrderStatus()
+
+  const { currentUser } = useGetMyUser()
 
   const { allOrders, isLoading: isGetRestaurantOrdersLoading } =
     useGetMyRestaurantOrders()
@@ -36,7 +39,7 @@ const ManageOrderForm = () => {
     const orders = initialOrders?.orders || []
     return {
       active: orders.filter((o) =>
-        ["paid", "confirmed", "preparing", "outForDelivery"].includes(o.status)
+        ["paid", "confirmed", "preparing", "readyForPickup"].includes(o.status)
       ),
       delivered: orders.filter((o) => o.status === "delivered"),
       issues: orders.filter((o) => ["cancelled", "failed"].includes(o.status)),
@@ -51,7 +54,7 @@ const ManageOrderForm = () => {
       .filter((o) => o.status === "preparing")
       .sort(),
     outForDelivery: groupedOrders.active
-      .filter((o) => o.status === "outForDelivery")
+      .filter((o) => o.status === "readyForPickup")
       .sort(),
   }
 
@@ -148,11 +151,12 @@ const ManageOrderForm = () => {
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {activeGroupedOrders.newOrders.map((activeOrder) => (
-                <OrderActiveCardItem
+                <OrderCardItem
                   order={activeOrder}
                   key={activeOrder._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
+                  role={currentUser?.role}
                 />
               ))}
             </div>
@@ -171,7 +175,7 @@ const ManageOrderForm = () => {
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {activeGroupedOrders.preparing.map((activeOrder) => (
-                <OrderActiveCardItem
+                <OrderCardItem
                   order={activeOrder}
                   key={activeOrder._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
@@ -194,7 +198,7 @@ const ManageOrderForm = () => {
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {activeGroupedOrders.outForDelivery.map((activeOrder) => (
-                <OrderActiveCardItem
+                <OrderCardItem
                   order={activeOrder}
                   key={activeOrder._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
@@ -218,7 +222,7 @@ const ManageOrderForm = () => {
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {groupedOrders.delivered.map((delivered) => (
-                <OrderActiveCardItem
+                <OrderCardItem
                   order={delivered}
                   key={delivered._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
@@ -242,7 +246,7 @@ const ManageOrderForm = () => {
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {issuesGroupedOrders.cancelled.map((cancelled) => (
-                <OrderActiveCardItem
+                <OrderCardItem
                   order={cancelled}
                   key={cancelled._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
@@ -262,7 +266,7 @@ const ManageOrderForm = () => {
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {issuesGroupedOrders.failed.map((failed) => (
-                <OrderActiveCardItem
+                <OrderCardItem
                   order={failed}
                   key={failed._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}

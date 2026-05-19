@@ -83,9 +83,21 @@ export type OrderStatus =
   | "pending"
   | "confirmed"
   | "preparing"
-  | "outForDelivery"
+  | "readyForPickup"
+  | "pickedUp"
   | "delivered"
   | "cancelled"
+
+export type RestaurantOrderStatus =
+  | "paid"
+  | "failed"
+  | "pending"
+  | "confirmed"
+  | "preparing"
+  | "readyForPickup"
+  | "cancelled"
+
+export type RiderOrderStatus = "pickedUp" | "delivered" | "cancelled"
 
 export type Weekdays =
   | "Sunday"
@@ -119,7 +131,7 @@ export type Order = {
   totalAmount: number
   razorpayOrderId?: string
   razorPaymentId?: string
-  status: OrderStatus
+  status: RestaurantOrderStatus | RiderOrderStatus
   createdAt: string
   restaurantId: string
 }

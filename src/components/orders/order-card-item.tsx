@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import type { Order, OrderStatus } from "@/type"
+import type { Order, OrderStatus, RestaurantOrderStatus } from "@/type"
 import {
   Card,
   CardContent,
@@ -23,11 +23,27 @@ import { useEffect, useState } from "react"
 type Props = {
   order: Order
   isLoading: boolean
-  onStatusUpdate?: (status: OrderStatus, orderId: string) => void
+  onStatusUpdate?: (status: RestaurantOrderStatus, orderId: string) => void
+  role: "Rider" | "Owner"
 }
 
-const OrderCardItem = ({ order, isLoading, onStatusUpdate }: Props) => {
-  const [status, setStatus] = useState<OrderStatus>(order.status)
+const OrderCardItem = ({ order, isLoading, onStatusUpdate, role }: Props) => {
+  const [status, setStatus] = useState<RestaurantOrderStatus>(order.status)
+
+  const filteredOrders =
+    role === "Owner"
+      ? ORDER_STATUS.filter((order) =>
+          [
+            "paid",
+            "pending",
+            "confirmed",
+            "preparing",
+            "readyForPickup",
+          ].includes(order.value)
+        )
+      : ORDER_STATUS.filter((order) =>
+          ["delivered", "pickedUp"].includes(order.value)
+        )
 
   const getTime = (orderTime: string) => {
     const orderDateTime = new Date(orderTime)
@@ -115,11 +131,12 @@ const OrderCardItem = ({ order, isLoading, onStatusUpdate }: Props) => {
               isLoading ||
               order.status === "delivered" ||
               order.status === "cancelled" ||
-              order.status === "failed"
+              order.status === "failed" ||
+              order.status === "pickedUp"
             }
             onValueChange={(value) => {
-              onStatusUpdate?.(value as OrderStatus, order._id)
-              setStatus(value as OrderStatus)
+              onStatusUpdate?.(value as RestaurantOrderStatus, order._id)
+              setStatus(value as RestaurantOrderStatus)
             }}
           >
             <SelectTrigger id="status" className="w-full">
@@ -129,7 +146,7 @@ const OrderCardItem = ({ order, isLoading, onStatusUpdate }: Props) => {
               />
             </SelectTrigger>
             <SelectContent position="popper" className="w-full">
-              {ORDER_STATUS.map((status) => (
+              {filteredOrders.map((status) => (
                 <SelectItem
                   className="text-[10px] md:text-sm"
                   key={status.label}

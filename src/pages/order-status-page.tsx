@@ -24,14 +24,16 @@ const OrderStatusPage = () => {
     paid: 1,
     confirmed: 2,
     preparing: 3,
-    outForDelivery: 4,
-    cancelled: 5,
-    failed: 6,
+    readyForPickup: 4,
+    pickedUp: 5,
+    delivered: 6,
+    cancelled: 99,
+    failed: 100,
   }
 
   const activeOrders = orders
     .filter((o) =>
-      ["paid", "preparing", "confirmed", "outForDelivery"].includes(o.status)
+      ["paid", "preparing", "confirmed", "readyForPickup"].includes(o.status)
     )
     .sort((a, b) => {
       const sortDiff = statusOrder[a.status] - statusOrder[b.status]
@@ -41,7 +43,15 @@ const OrderStatusPage = () => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
 
-  const delivered = orders.filter((o) => o.status === "delivered").sort()
+  const delivered = orders
+    .filter((o) => ["delivered", "pickedUp"].includes(o.status))
+    .sort((a, b) => {
+      const sortDiff = statusOrder[a.status] - statusOrder[b.status]
+
+      if (sortDiff !== 0) return sortDiff
+
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
   const issues = orders
     .filter((o) => ["cancelled", "failed"].includes(o.status))
@@ -111,7 +121,7 @@ const OrderStatusPage = () => {
                   <img
                     src={order.restaurant.imageUrl}
                     alt={order.restaurantName}
-                    className="objet-cover h-full w-full rounded-md"
+                    className="h-full w-full rounded-md object-cover"
                   />
                 </AspectRatio>
               </div>
@@ -133,7 +143,7 @@ const OrderStatusPage = () => {
                   <img
                     src={order.restaurant.imageUrl}
                     alt={order.restaurantName}
-                    className="objet-cover h-full w-full rounded-md"
+                    className="h-full w-full rounded-md object-cover"
                   />
                 </AspectRatio>
               </div>
