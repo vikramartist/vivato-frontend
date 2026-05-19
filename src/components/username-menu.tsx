@@ -19,23 +19,15 @@ const UsernameMenu = ({ currentUser }: { currentUser: User }) => {
   if (!currentUser) return null
 
   const handleLogout = () => {
-    if (currentUser.role !== "Rider") {
-      logout({
-        logoutParams: {
-          returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
-        },
-      })
-
-      return
+    if (currentUser?.role === "Rider" && socket.connected) {
+      socket.emit("rider-offline")
+      socket.disconnect()
     }
 
-    socket.emit("rider-offline", () => {
-      socket.disconnect()
-      logout({
-        logoutParams: {
-          returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
-        },
-      })
+    logout({
+      logoutParams: {
+        returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
+      },
     })
   }
 
