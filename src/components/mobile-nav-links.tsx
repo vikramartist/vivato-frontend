@@ -10,7 +10,19 @@ const MobilenavLinks = () => {
   const navigate = useNavigate()
   const { currentUser } = useGetMyUser()
 
+  if (!currentUser) return null
+
   const handleLogout = () => {
+    if (currentUser.role !== "Rider") {
+      logout({
+        logoutParams: {
+          returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
+        },
+      })
+
+      return
+    }
+
     socket.emit("rider-offline", () => {
       console.log("logging out")
       socket.disconnect()

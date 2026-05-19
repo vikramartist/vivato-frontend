@@ -18,15 +18,12 @@ import {
   useUpdateMyRestaurantOrderStatus,
 } from "@/api/MyRestaurantApi"
 import { useParams } from "react-router-dom"
-import { useGetMyUser } from "@/api/MyUserApi"
 
 const ManageOrderForm = () => {
   const isMobile = useIsMobile()
   const { restaurantId } = useParams()
   const { isLoading, updateRestaurantOrderStatus } =
     useUpdateMyRestaurantOrderStatus()
-
-  const { currentUser } = useGetMyUser()
 
   const { allOrders, isLoading: isGetRestaurantOrdersLoading } =
     useGetMyRestaurantOrders()
@@ -156,7 +153,7 @@ const ManageOrderForm = () => {
                   key={activeOrder._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
-                  role={currentUser?.role}
+                  role="Owner"
                 />
               ))}
             </div>
@@ -180,6 +177,7 @@ const ManageOrderForm = () => {
                   key={activeOrder._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
+                  role="Owner"
                 />
               ))}
             </div>
@@ -203,6 +201,7 @@ const ManageOrderForm = () => {
                   key={activeOrder._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
+                  role="Owner"
                 />
               ))}
             </div>
@@ -227,6 +226,7 @@ const ManageOrderForm = () => {
                   key={delivered._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
+                  role="Owner"
                 />
               ))}
             </div>
@@ -251,6 +251,7 @@ const ManageOrderForm = () => {
                   key={cancelled._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
+                  role="Owner"
                 />
               ))}
             </div>
@@ -271,6 +272,7 @@ const ManageOrderForm = () => {
                   key={failed._id}
                   isLoading={isLoading || isGetRestaurantOrdersLoading}
                   onStatusUpdate={handleStatusChange}
+                  role="Owner"
                 />
               ))}
             </div>

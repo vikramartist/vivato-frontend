@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import type { Order, OrderStatus, RestaurantOrderStatus } from "@/type"
+import type { Order, OrderStatus } from "@/type"
 import {
   Card,
   CardContent,
@@ -23,12 +23,12 @@ import { useEffect, useState } from "react"
 type Props = {
   order: Order
   isLoading: boolean
-  onStatusUpdate?: (status: RestaurantOrderStatus, orderId: string) => void
+  onStatusUpdate?: (status: OrderStatus, orderId: string) => void
   role: "Rider" | "Owner"
 }
 
 const OrderCardItem = ({ order, isLoading, onStatusUpdate, role }: Props) => {
-  const [status, setStatus] = useState<RestaurantOrderStatus>(order.status)
+  const [status, setStatus] = useState<OrderStatus>(order.status)
 
   const filteredOrders =
     role === "Owner"
@@ -135,8 +135,8 @@ const OrderCardItem = ({ order, isLoading, onStatusUpdate, role }: Props) => {
               order.status === "pickedUp"
             }
             onValueChange={(value) => {
-              onStatusUpdate?.(value as RestaurantOrderStatus, order._id)
-              setStatus(value as RestaurantOrderStatus)
+              onStatusUpdate?.(value as OrderStatus, order._id)
+              setStatus(value as OrderStatus)
             }}
           >
             <SelectTrigger id="status" className="w-full">
