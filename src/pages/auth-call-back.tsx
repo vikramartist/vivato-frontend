@@ -24,7 +24,7 @@ const AuthCallbackPage = () => {
       hasCreatedUser.current = true
     }
     navigate("/")
-  }, [navigate, createUser])
+  }, [navigate, createUser, user])
 
   return (
     <div className="flex h-screen w-full animate-pulse flex-col items-center justify-center">
