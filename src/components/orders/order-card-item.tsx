@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card"
@@ -19,15 +20,28 @@ import {
 } from "../ui/select"
 import { ORDER_STATUS } from "@/config/order-status-config"
 import { useEffect, useState } from "react"
+import { Button } from "../ui/button"
+import { formatDate } from "@/lib/utils"
 
 type Props = {
   order: Order
   isLoading: boolean
-  onStatusUpdate?: (status: OrderStatus, orderId: string) => void
+  onStatusUpdate?: (
+    status: OrderStatus,
+    orderId: string,
+    restaurantId?: string
+  ) => void
+  onRideClick?: (orderId: string, status: "Accept" | "Reject") => void
   role: "Rider" | "Owner"
 }
 
-const OrderCardItem = ({ order, isLoading, onStatusUpdate, role }: Props) => {
+const OrderCardItem = ({
+  order,
+  isLoading,
+  onStatusUpdate,
+  role,
+  onRideClick,
+}: Props) => {
   const [status, setStatus] = useState<OrderStatus>(order.status)
 
   const filteredOrders =
@@ -42,7 +56,7 @@ const OrderCardItem = ({ order, isLoading, onStatusUpdate, role }: Props) => {
           ].includes(order.value)
         )
       : ORDER_STATUS.filter((order) =>
-          ["delivered", "pickedUp"].includes(order.value)
+          ["delivered", "pickedUp", "readyForPickup"].includes(order.value)
         )
 
   const getTime = (orderTime: string) => {
@@ -109,56 +123,126 @@ const OrderCardItem = ({ order, isLoading, onStatusUpdate, role }: Props) => {
           </div>
         </CardDescription>
         <Separator />
+        <CardDescription>
+          <span className="text-[12px] md:text-[15px]">Restaurant Details</span>
+          <div className="mb-3 grid justify-between gap-4 font-semibold md:grid-cols-2">
+            <div className="text-[10px] md:text-sm">
+              Name:
+              <span className="ml-2 text-[9px] font-normal md:text-sm">
+                {order.restaurant.restaurantName}
+              </span>
+            </div>
+            <div className="text-[10px] md:text-sm">
+              Address:
+              <span className="ml-2 text-[9px] font-normal md:text-sm">
+                {order.restaurant.address +
+                  ", " +
+                  order.restaurant.city +
+                  ", " +
+                  order.restaurant.country +
+                  ", " +
+                  order.restaurant.zipCode}
+              </span>
+            </div>
+            <div className="text-[10px] md:text-sm">
+              Contact:
+              <span className="ml-2 text-[9px] font-normal md:text-sm">
+                {order.restaurant.contact}
+              </span>
+            </div>
+          </div>
+        </CardDescription>
       </CardHeader>
-      <CardContent className="flex gap-6">
-        <div className="flex flex-col gap-2">
-          {order.cartItems.map((cartItem) => (
-            <span key={cartItem.menuItemId} className="text-[9px] md:text-sm">
-              <Badge variant={"outline"} className="mr-2 text-[9px] md:text-sm">
-                {cartItem.quantity}
-              </Badge>
-              {cartItem.name}
-            </span>
-          ))}
-        </div>
-        <div className="flex flex-col space-y-1.5">
-          <Label htmlFor="status" className="text-[10px] md:text-sm">
-            What is the status of this order?
-          </Label>
-          <Select
-            value={status}
-            disabled={
-              isLoading ||
-              order.status === "delivered" ||
-              order.status === "cancelled" ||
-              order.status === "failed" ||
-              order.status === "pickedUp"
-            }
-            onValueChange={(value) => {
-              onStatusUpdate?.(value as OrderStatus, order._id)
-              setStatus(value as OrderStatus)
-            }}
-          >
-            <SelectTrigger id="status" className="w-full">
-              <SelectValue
-                className="text-[10px] md:text-sm"
-                placeholder="Status"
-              />
-            </SelectTrigger>
-            <SelectContent position="popper" className="w-full">
-              {filteredOrders.map((status) => (
-                <SelectItem
-                  className="text-[10px] md:text-sm"
-                  key={status.label}
-                  value={status.value}
+      {role === "Owner" || order.assignedRider ? (
+        <CardContent className="flex gap-6">
+          <div className="flex flex-col gap-2">
+            {order.cartItems.map((cartItem) => (
+              <span key={cartItem.menuItemId} className="text-[9px] md:text-sm">
+                <Badge
+                  variant={"outline"}
+                  className="mr-2 text-[9px] md:text-sm"
                 >
-                  {status.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </CardContent>
+                  {cartItem.quantity}
+                </Badge>
+                {cartItem.name}
+              </span>
+            ))}
+          </div>
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="status" className="text-[10px] md:text-sm">
+              What is the status of this order?
+            </Label>
+            <Select
+              value={status}
+              disabled={
+                isLoading ||
+                order.status === "delivered" ||
+                order.status === "cancelled" ||
+                order.status === "failed"
+              }
+              onValueChange={(value) => {
+                onStatusUpdate?.(
+                  value as OrderStatus,
+                  order._id,
+                  order.restaurant._id as string
+                )
+                setStatus(value as OrderStatus)
+              }}
+            >
+              <SelectTrigger id="status" className="w-full">
+                <SelectValue
+                  className="text-[10px] md:text-sm"
+                  placeholder="Status"
+                />
+              </SelectTrigger>
+              <SelectContent position="popper" className="w-full">
+                {filteredOrders.map((status) => (
+                  <SelectItem
+                    className="text-[10px] md:text-sm"
+                    key={status.label}
+                    value={status.value}
+                  >
+                    {status.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      ) : (
+        <CardContent>
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-[10px] tracking-wide md:text-sm">
+              Are you ready to pick this order?
+            </span>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => onRideClick!(order._id, "Accept")}
+                disabled={isLoading}
+                variant={"outline"}
+                className="bg-orange-500 text-[9px] tracking-wide text-white hover:bg-orange-600 hover:text-white md:text-sm dark:bg-gray-500 dark:hover:bg-gray-600"
+              >
+                Accept Ride
+              </Button>
+              <Button
+                disabled={isLoading}
+                onClick={() => onRideClick!(order._id, "Reject")}
+                variant={"secondary"}
+                className="text-[9px] tracking-wide md:text-sm"
+              >
+                Reject Ride
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      )}
+      {order.status === "delivered" && (
+        <CardFooter>
+          <span className="text-[10px] md:text-sm">
+            Delivered on - {formatDate(new Date(order.deliveredAt as Date))}
+          </span>
+        </CardFooter>
+      )}
     </Card>
   )
 }

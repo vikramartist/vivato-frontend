@@ -33,7 +33,9 @@ const OrderStatusPage = () => {
 
   const activeOrders = orders
     .filter((o) =>
-      ["paid", "preparing", "confirmed", "readyForPickup"].includes(o.status)
+      ["paid", "preparing", "confirmed", "readyForPickup", "pickedUp"].includes(
+        o.status
+      )
     )
     .sort((a, b) => {
       const sortDiff = statusOrder[a.status] - statusOrder[b.status]
@@ -44,7 +46,7 @@ const OrderStatusPage = () => {
     })
 
   const delivered = orders
-    .filter((o) => ["delivered", "pickedUp"].includes(o.status))
+    .filter((o) => ["delivered"].includes(o.status))
     .sort((a, b) => {
       const sortDiff = statusOrder[a.status] - statusOrder[b.status]
 

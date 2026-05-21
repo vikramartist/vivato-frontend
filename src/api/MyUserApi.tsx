@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Rider, User, VehicleType, Weekdays } from "@/type"
+import type { Order, Rider, User, VehicleType, Weekdays } from "@/type"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useMutation, useQuery } from "react-query"
 import { toast } from "sonner"
@@ -44,6 +44,42 @@ type UpdateMyRiderRequest = {
   deliveryRadiusKm: number
   workHours: { start: string; end: string }
   workingDays: Weekdays[]
+}
+
+export const useGetRiderOrders = (riderId: string) => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const getMyRiderOrdersRequest = async (): Promise<Order[]> => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/user/rider-order/${riderId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Failed to get rider orders's")
+    }
+
+    return response.json()
+  }
+
+  const { data: getRiderOrders, isLoading } = useQuery(
+    ["fetchRiderOrders", riderId],
+    getMyRiderOrdersRequest,
+    {
+      refetchOnWindowFocus: true,
+      refetchInterval: 5000,
+      enabled: !!riderId,
+    }
+  )
+
+  return { getRiderOrders, isLoading }
 }
 
 export const useGetRiderProfile = () => {
@@ -145,6 +181,37 @@ export const useGetMyUser = () => {
   return { currentUser, isLoading }
 }
 
+export const useGetMyRiderById = (riderId: string) => {
+  const { getAccessTokenSilently } = useAuth0()
+  const getMyRiderByIdRequest = async (): Promise<User> => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/user/rider/${riderId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`Failed to get rider by id: ${riderId}`)
+    }
+
+    return response.json()
+  }
+
+  const { data: rider, isLoading } = useQuery(
+    "fetchRiderById",
+    getMyRiderByIdRequest,
+    { refetchOnWindowFocus: true, enabled: !!riderId }
+  )
+
+  return { rider, isLoading }
+}
+
 export const useCreateMyUser = () => {
   const { getAccessTokenSilently } = useAuth0()
   const createMyUserRequest = async (user: CreateUserRequest) => {
@@ -207,4 +274,82 @@ export const useUpdateMyUser = () => {
   })
 
   return { updateUser, isLoading }
+}
+
+export const useAcceptRide = () => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const acceptRideRequest = async (orderId: string) => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/user/rider-order/${orderId}/accept`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Error while accepting ride")
+    }
+
+    return response.json()
+  }
+  const {
+    mutateAsync: acceptRide,
+    isLoading,
+    reset,
+  } = useMutation(acceptRideRequest, {
+    onSuccess: () => {
+      toast.success("Ride accepted", { duration: 500 })
+    },
+    onError: (error: any) => {
+      toast.error(error?.message ?? error.toString(), { duration: 1000 })
+      reset()
+    },
+  })
+
+  return { acceptRide, isLoading }
+}
+
+export const useRejectRide = () => {
+  const { getAccessTokenSilently } = useAuth0()
+
+  const rejectRideRequest = async (orderId: string) => {
+    const accessToken = await getAccessTokenSilently()
+    const response = await fetch(
+      `${API_BASE_URL}/api/my/user/rider-order/${orderId}/reject`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error("Error while rejecting ride")
+    }
+
+    return response.json()
+  }
+  const {
+    mutateAsync: rejectRide,
+    isLoading,
+    reset,
+  } = useMutation(rejectRideRequest, {
+    onSuccess: () => {
+      toast.success("Ride Rejected", { duration: 500 })
+    },
+    onError: (error: any) => {
+      toast.error(error?.message ?? error.toString(), { duration: 1000 })
+      reset()
+    },
+  })
+
+  return { rejectRide, isLoading }
 }

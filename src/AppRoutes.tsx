@@ -17,6 +17,7 @@ import MainMap from "./components/main-map.tsx"
 import OrderStatusPage from "./pages/order-status-page.tsx"
 import ManageOrderForm from "./components/orders/manage-order-form.tsx"
 import NearbyRestaurantsPage from "./pages/nearby-restaurant-page.tsx"
+import RiderOrderPage from "./pages/rider-order-page.tsx"
 
 const AppRoutes = () => {
   return (
@@ -83,6 +84,14 @@ const AppRoutes = () => {
           element={
             <Layout>
               <OrderStatusPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/rider-order-status"
+          element={
+            <Layout>
+              <RiderOrderPage />
             </Layout>
           }
         />

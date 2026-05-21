@@ -50,7 +50,7 @@ const ManageOrderForm = () => {
     preparing: groupedOrders.active
       .filter((o) => o.status === "preparing")
       .sort(),
-    outForDelivery: groupedOrders.active
+    readyForPickup: groupedOrders.active
       .filter((o) => o.status === "readyForPickup")
       .sort(),
   }
@@ -66,12 +66,14 @@ const ManageOrderForm = () => {
 
   const handleStatusChange = async (
     newStatus: OrderStatus,
-    orderId: string
+    orderId: string,
+    restaurantId?: string
   ) => {
     try {
       await updateRestaurantOrderStatus({
         orderId: orderId,
         status: newStatus,
+        restaurantId: restaurantId as string,
       })
     } catch (error) {
       console.log(error)
@@ -184,18 +186,18 @@ const ManageOrderForm = () => {
           </section>
         )}
 
-        {activeGroupedOrders.outForDelivery.length > 0 && (
+        {activeGroupedOrders.readyForPickup.length > 0 && (
           <section className="space-y-2">
             <div className="flex items-center gap-2">
               <h2 className="text-[10px] font-semibold md:text-sm">
-                Out For Delivery
+                Ready for pickup
               </h2>
               <span className="text-[10px] text-muted-foreground md:text-sm">
-                ({activeGroupedOrders.outForDelivery.length})
+                ({activeGroupedOrders.readyForPickup.length})
               </span>
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {activeGroupedOrders.outForDelivery.map((activeOrder) => (
+              {activeGroupedOrders.readyForPickup.map((activeOrder) => (
                 <OrderCardItem
                   order={activeOrder}
                   key={activeOrder._id}

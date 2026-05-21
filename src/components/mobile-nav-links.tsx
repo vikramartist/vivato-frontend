@@ -49,7 +49,13 @@ const MobilenavLinks = () => {
         </Button>
       )}
       <Button
-        onClick={() => navigate("/order-status")}
+        onClick={() =>
+          navigate(
+            currentUser.role === "Rider"
+              ? "rider-order-status"
+              : "/order-status"
+          )
+        }
         variant={"outline"}
         className="flex items-center text-[10px] font-semibold tracking-tight hover:text-orange-500 dark:bg-[#201f1f] dark:text-white"
         size={"sm"}

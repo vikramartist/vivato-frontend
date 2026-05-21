@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "react-query"
 import { Toaster } from "./components/ui/sonner"
 import { TooltipProvider } from "./components/ui/tooltip"
 import "react-phone-number-input/style.css"
+import SocketInitializer from "./socket/SocketInitializer"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,10 +26,12 @@ createRoot(document.getElementById("root")!).render(
       <Router>
         <QueryClientProvider client={queryClient}>
           <Auth0ProviderWithNavigate>
-            <TooltipProvider>
-              <AppRoutes />
-              <Toaster visibleToasts={1} position="top-center" richColors />
-            </TooltipProvider>
+            <SocketInitializer>
+              <TooltipProvider>
+                <AppRoutes />
+                <Toaster visibleToasts={1} position="top-center" richColors />
+              </TooltipProvider>
+            </SocketInitializer>
           </Auth0ProviderWithNavigate>
         </QueryClientProvider>
       </Router>

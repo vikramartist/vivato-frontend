@@ -1,16 +1,39 @@
 import type { Order } from "@/type"
 import { Separator } from "../ui/separator"
-import { Mail, MapPinHouse, PhoneCall, User } from "lucide-react"
+import {
+  Bike,
+  HotelIcon,
+  Mail,
+  MapPinHouse,
+  MapPlusIcon,
+  PhoneCall,
+  User,
+} from "lucide-react"
+import { useGetMyRiderById } from "@/api/MyUserApi"
+import { formatDate } from "@/lib/utils"
 
 type Props = { order: Order }
 
 const OrderStatusDetails = ({ order }: Props) => {
+  const { isLoading, rider } = useGetMyRiderById(order.assignedRider)
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full animate-pulse flex-col items-center justify-center">
+        <img src="/logo.svg" alt="Logo" />
+        <span className="text-[9px] md:text-sm">Orders...</span>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex flex-col gap-2">
         <span className="text-[10px] font-semibold md:text-sm">
           {" "}
-          {order.status === "delivered" ? `Delivered` : "Delivering to:"}
+          {order.status === "delivered"
+            ? `Delivered on ${formatDate(new Date(order.deliveredAt as Date))}`
+            : "Delivering to:"}
         </span>
         <span className="flex items-center gap-1 text-[10px] md:text-sm">
           <User className="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -30,6 +53,47 @@ const OrderStatusDetails = ({ order }: Props) => {
           {order.deliveryDetails.country}
         </span>
       </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-[10px] font-bold md:text-[14px]">
+          Restaurant Details:
+        </span>
+        <span className="flex items-center gap-1 text-[10px] md:text-sm">
+          <HotelIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          Name: {order.restaurantName}
+        </span>
+        <span className="flex items-center gap-1 text-[10px] md:text-sm">
+          <PhoneCall className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          Contact: {order.restaurant.contact}
+        </span>
+        <span className="flex items-center gap-1 text-[10px] md:text-sm">
+          <MapPlusIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          Address:{" "}
+          {order.restaurant.address +
+            ", " +
+            order.restaurant.city +
+            ", " +
+            order.restaurant.country}
+        </span>
+      </div>
+      {order.assignedRider && (
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] font-bold md:text-[14px]">
+            Assigned Rider:
+          </span>
+          <span className="flex items-center gap-1 text-[10px] md:text-sm">
+            <HotelIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            Name: {rider?.name}
+          </span>
+          <span className="flex items-center gap-1 text-[10px] md:text-sm">
+            <PhoneCall className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            Contact: {rider?.contact}
+          </span>
+          <span className="flex items-center gap-1 text-[10px] md:text-sm">
+            <Bike className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            Vehicle: {rider?.riderInfo?.vehicleType}
+          </span>
+        </div>
+      )}
       <div className="flex flex-col">
         <span className="text-[10px] font-semibold md:text-sm">
           Your Order(s)

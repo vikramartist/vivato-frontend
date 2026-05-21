@@ -51,7 +51,11 @@ const MainNav = () => {
             <div className="items-center gap-2">
               <ShoppingBag className="text-orange-500 dark:text-white" />
               <Link
-                to={"/order-status"}
+                to={
+                  currentUser?.role === "Rider"
+                    ? "/rider-order-status"
+                    : "/order-status"
+                }
                 className="font-semibold hover:text-orange-500 dark:hover:text-white"
               >
                 {currentUser?.role === "Rider" ? "My Orders" : "Order Status"}

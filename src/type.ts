@@ -13,6 +13,7 @@ export type User = {
     type: "Point"
     coordinates: [number, number]
   }
+  riderInfo?: Rider
 }
 
 export type RoleRequestType = {
@@ -103,6 +104,7 @@ export type Order = {
   _id: string
   restaurant: Restaurant
   user: User
+  assignedRider: string
   restaurantName: string
   cartItems: {
     menuItemId: string
@@ -123,9 +125,13 @@ export type Order = {
   status: OrderStatus
   createdAt: string
   restaurantId: string
+  deliveredAt?: Date
 }
 
+export type RiderStatus = "Online" | "Offline" | "Busy" | "Leave"
+
 export type Rider = {
+  _id?: string
   riderId?: string
   experience: number
   isAvailable?: boolean
@@ -138,4 +144,5 @@ export type Rider = {
   deliveryRadiusKm: number
   workHours: { start: string; end: string }
   workingDays: Weekdays[]
+  status?: RiderStatus
 }

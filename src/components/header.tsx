@@ -4,7 +4,7 @@ import MainNav from "./main-nav"
 import MobileNav from "./mobile-nav"
 import { ModeToggle } from "./mode-toggle"
 import RoleRequestPage from "@/pages/role-request-page"
-import { useGetMyUser } from "@/api/MyUserApi"
+import { useGetMyUser, useGetRiderProfile } from "@/api/MyUserApi"
 import { useGetRoleRequest } from "@/api/MyRoleApi"
 import AdminDashboard from "./admin/admin-dashboard"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -22,6 +22,7 @@ const Header = () => {
   const { getRole } = useGetRoleRequest()
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const { getRider } = useGetRiderProfile()
 
   const isMapOpened = pathname === "/restaurants/maps"
 
@@ -62,32 +63,60 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between px-2">
         <div className="flex items-center justify-center gap-2">
           <Logo />
-          {isAuthenticated ? (
-            <div className="flex items-start justify-start">
-              <Badge
-                className="flex w-18 items-center justify-center gap-2 bg-green-800 px-2"
-                variant={"outline"}
-              >
-                <span className="text-[11px] text-white md:text-sm">
-                  Online
-                </span>
-                <div className="relative flex items-center justify-center">
-                  <span className="absolute h-3 w-3 animate-ping rounded-full bg-green-500 opacity-75" />
-                  <span className="absolute h-2 w-2 rounded-full bg-green-500" />
+          {isAuthenticated && (
+            <>
+              {getRider?.status === "Online" ||
+              currentUser?.role === "Customer" ||
+              currentUser?.role === "Owner" ? (
+                <div className="flex items-start justify-start">
+                  <Badge
+                    className="flex w-18 items-center justify-center gap-2 bg-green-800 px-2"
+                    variant={"outline"}
+                  >
+                    <span className="text-[11px] text-white md:text-sm">
+                      Online
+                    </span>
+                    <div className="relative flex items-center justify-center">
+                      <span className="absolute h-3 w-3 animate-ping rounded-full bg-green-500 opacity-75" />
+                      <span className="absolute h-2 w-2 rounded-full bg-green-500" />
+                    </div>
+                  </Badge>
                 </div>
-              </Badge>
-            </div>
-          ) : (
-            <div className="flex items-start">
-              <Badge
-                variant={"outline"}
-                className="flex w-18 items-center justify-center bg-gray-700 px-2"
-              >
-                <span className="text-[11px] text-white md:text-sm">
-                  Offline
-                </span>
-              </Badge>
-            </div>
+              ) : getRider?.status === "Busy" ? (
+                <div className="flex items-start">
+                  <Badge
+                    variant={"outline"}
+                    className="flex w-18 items-center justify-center bg-red-500 px-2"
+                  >
+                    <span className="text-[11px] text-white md:text-sm">
+                      Busy
+                    </span>
+                  </Badge>
+                </div>
+              ) : getRider?.status === "Leave" ? (
+                <div className="flex items-start">
+                  <Badge
+                    variant={"outline"}
+                    className="flex w-18 items-center justify-center bg-pink-500 px-2"
+                  >
+                    <span className="text-[11px] text-white md:text-sm">
+                      Leave
+                    </span>
+                  </Badge>
+                </div>
+              ) : (
+                <div className="flex items-start">
+                  <Badge
+                    variant={"outline"}
+                    className="flex w-18 items-center justify-center bg-gray-700 px-2"
+                  >
+                    <span className="text-[11px] text-white md:text-sm">
+                      Offline
+                    </span>
+                  </Badge>
+                </div>
+              )}
+            </>
           )}
           {currentUser?.role === "Customer" && (
             <div className="w-full items-start justify-between">

@@ -1,7 +1,6 @@
 import type { Order, Restaurant } from "@/type"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import { useParams } from "react-router-dom"
 import { toast } from "sonner"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string
@@ -20,18 +19,18 @@ export type GetMyRestaurantOrdersRequest = {
 export type UpdateMyRestaurantOrderStatus = {
   orderId: string
   status: string
+  restaurantId?: string
 }
 
 export const useUpdateMyRestaurantOrderStatus = () => {
   const { getAccessTokenSilently } = useAuth0()
-
-  const { restaurantId } = useParams()
 
   const queryClient = useQueryClient()
 
   const updateMyRestaurantOrderStatus = async ({
     orderId,
     status,
+    restaurantId,
   }: UpdateMyRestaurantOrderStatus) => {
     const aceessToken = await getAccessTokenSilently()
     const response = await fetch(
