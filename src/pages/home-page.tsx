@@ -1,8 +1,23 @@
+import { useGetMyUser } from "@/api/MyUserApi"
+import { useSearchRestaurants } from "@/api/RestaurantApi"
+import RestaurantsHome from "@/components/restaurants-home"
 import SearchBar, { type SearchForm } from "@/components/search-bar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useNavigate } from "react-router-dom"
 
 const HomePage = () => {
   const navigate = useNavigate()
+  const { currentUser } = useGetMyUser()
+  const { data, isLoading } = useSearchRestaurants(
+    {
+      searchQuery: "",
+      page: 1,
+      selectedCuisines: [],
+      foodType: "veg",
+      sortOption: "bestMatch",
+    },
+    currentUser?.city ?? "Bengaluru"
+  )
 
   const handleSearchSubmit = (searchForm: SearchForm) => {
     navigate({ pathname: `search/${searchForm.searchQuery}` })
@@ -20,6 +35,32 @@ const HomePage = () => {
           placeHolder="Search by City or Town"
           onSubmit={handleSearchSubmit}
         />
+      </div>
+
+      <div className="mx-auto flex h-fit w-[95%] flex-col items-center gap-2 md:container">
+        <span className="w-full self-start px-2 text-[10px] md:text-[15px]">
+          Restaurants in your city
+        </span>
+        {isLoading ? (
+          <div className="mx-auto mb-2 flex h-54 w-full gap-3">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                className="h-30 w-30 cursor-pointer shadow md:h-50 md:w-50"
+              ></Skeleton>
+            ))}
+          </div>
+        ) : (
+          <div className="mx-auto mb-2 no-scrollbar flex h-54 w-full gap-3 overflow-x-scroll px-1">
+            {data?.data.map((restaurant, index) => (
+              <RestaurantsHome
+                key={index}
+                restaurant={restaurant}
+                index={index}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div className="grid gap-5 md:grid-cols-2">
         <img src="/landing.png" alt="landing" />
