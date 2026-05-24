@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuth0 } from "@auth0/auth0-react"
 import { Button } from "./ui/button"
 import { useNavigate } from "react-router-dom"
 import { useGetMyUser } from "@/api/MyUserApi"
-import { LogOut, ShoppingBag, User, Utensils } from "lucide-react"
+import { Hotel, LogOut, ShoppingBag, User, Utensils } from "lucide-react"
 import { socket } from "@/socket"
+import { toast } from "sonner"
+import { getUserLocation } from "@/lib/utils"
 
 const MobilenavLinks = () => {
   const { logout } = useAuth0()
@@ -23,6 +26,18 @@ const MobilenavLinks = () => {
         returnTo: import.meta.env.VITE_AUTH0_CALLBACK_URL as string,
       },
     })
+  }
+
+  const handleLocationClick = async () => {
+    try {
+      const { latitude, longitude } = await getUserLocation()
+      navigate({
+        pathname: `/restaurants/nearby`,
+        search: `?lat=${latitude}&lng=${longitude}`,
+      })
+    } catch (error: any) {
+      toast.error(error.message, { duration: 1000 })
+    }
   }
 
   return (
@@ -62,6 +77,15 @@ const MobilenavLinks = () => {
       >
         <ShoppingBag />
         {currentUser?.role === "Rider" ? "My Orders" : "Order Status"}
+      </Button>
+      <Button
+        onClick={handleLocationClick}
+        variant={"outline"}
+        className="flex items-center text-[10px] font-semibold tracking-tight hover:text-orange-500 dark:bg-[#201f1f] dark:text-white"
+        size={"sm"}
+      >
+        <Hotel />
+        Neareby Restaurants
       </Button>
       <Button
         onClick={() => navigate("/user-profile")}

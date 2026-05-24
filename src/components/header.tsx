@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuth0 } from "@auth0/auth0-react"
 import Logo from "./logo"
 import MainNav from "./main-nav"
@@ -10,19 +11,26 @@ import AdminDashboard from "./admin/admin-dashboard"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { Button } from "./ui/button"
-import { Home, LucideBuilding2, MapPinHouse } from "lucide-react"
+import { Home, LucideBuilding2, MapPinHouse, Sparkle } from "lucide-react"
 import { getUserLocation } from "@/lib/utils"
 import { Badge } from "./ui/badge"
 import { useEffect } from "react"
 import { socket } from "@/socket"
+import { toast } from "sonner"
+import AiSearch from "./ai/ai-search"
+import { Dialog, DialogTrigger } from "./ui/dialog"
+import { useAiFoodSearch } from "@/api/AiApi"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const Header = () => {
-  const { isAuthenticated } = useAuth0()
+  const { isAuthenticated, loginWithRedirect } = useAuth0()
   const { currentUser } = useGetMyUser()
   const { getRole } = useGetRoleRequest()
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { getRider } = useGetRiderProfile()
+  const { aiSearch, isLoading } = useAiFoodSearch()
+  const isMobile = useIsMobile()
 
   const isMapOpened = pathname === "/restaurants/maps"
 
@@ -53,8 +61,23 @@ const Header = () => {
         pathname: `/restaurants/nearby`,
         search: `?lat=${latitude}&lng=${longitude}`,
       })
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      toast.error(error.message, { duration: 1000 })
+    }
+  }
+
+  const handleAiSearch = async (query: string) => {
+    if (!isAuthenticated) {
+      await loginWithRedirect()
+    } else {
+      const results = await aiSearch(query)
+
+      navigate("/ai/food-search", {
+        state: {
+          query: query,
+          results: results,
+        },
+      })
     }
   }
 
@@ -118,21 +141,44 @@ const Header = () => {
               )}
             </>
           )}
-          {currentUser?.role === "Customer" && (
-            <div className="w-full items-start justify-between">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant={"outline"} onClick={handleLocationClick}>
-                    <LucideBuilding2 className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4 dark:text-white" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-[9px] md:text-sm">
-                    Find Restaurants near me
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
+          {isAuthenticated && (
+            <>
+              <div className="w-full items-center">
+                <Dialog>
+                  <DialogTrigger>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant={"outline"}>
+                          <Sparkle className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4 dark:text-white" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-[9px] md:text-sm">
+                          {isAuthenticated ? "Ask AI" : "Login to Ask AI"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </DialogTrigger>
+                  <AiSearch onClick={handleAiSearch} isLoading={isLoading} />
+                </Dialog>
+              </div>
+              {!isMobile && (
+                <div className="w-full items-start justify-between">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant={"outline"} onClick={handleLocationClick}>
+                        <LucideBuilding2 className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4 dark:text-white" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-[9px] md:text-sm">
+                        Find Restaurants near me
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              )}
+            </>
           )}
         </div>
 

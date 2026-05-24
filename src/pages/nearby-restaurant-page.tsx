@@ -32,7 +32,7 @@ const NearbyRestaurantsPage = () => {
 
   return (
     <div className="flex w-full flex-col items-start justify-center gap-2">
-      <div className="w-[80%] flex-1 space-y-2">
+      <div className="mx-auto w-full space-y-2 md:w-[80%]">
         <SearchBar
           placeHolder="Not enabled now"
           onSubmit={handleSearchSubmit}
@@ -46,7 +46,7 @@ const NearbyRestaurantsPage = () => {
             : `${nearbyRestaurants.length} Restaurant `}
           near you
         </span>
-        <div className="grid grid-cols-1 gap-5 px-2 md:grid-cols-2 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 px-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           {nearbyRestaurants.map((restaurant, index) => (
             <SearchCard restaurant={restaurant} key={index} />
           ))}

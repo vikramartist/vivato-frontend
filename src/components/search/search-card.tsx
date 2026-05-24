@@ -2,24 +2,34 @@ import type { Restaurant } from "@/type"
 import { Link } from "react-router-dom"
 import { AspectRatio } from "../ui/aspect-ratio"
 import { Clock, IndianRupee } from "lucide-react"
-import { cn, getDistanceInKm, hhmmToMinutes } from "@/lib/utils"
-import { useGetMyUser } from "@/api/MyUserApi"
+import {
+  cn,
+  getDistanceInKm,
+  getLatLng,
+  getUserLocation,
+  hhmmToMinutes,
+} from "@/lib/utils"
+import { useEffect, useState } from "react"
 
 type Props = {
   restaurant: Restaurant
 }
 
 const SearchCard = ({ restaurant }: Props) => {
-  const { currentUser } = useGetMyUser()
+  const [distance, setDistance] = useState<number | null>(null)
 
-  const calculateDistance = () => {
-    return getDistanceInKm(
-      currentUser?.location?.coordinates[1] as number,
-      currentUser?.location?.coordinates[0] as number,
-      restaurant.location?.coordinates?.[1] as number,
-      restaurant.location?.coordinates?.[0] as number
-    )
-  }
+  useEffect(() => {
+    const getLocation = async () => {
+      const { latitude, longitude } = await getUserLocation()
+      const { lat, lng } = getLatLng(restaurant.location?.coordinates)
+
+      const distance = getDistanceInKm(latitude, longitude, lat, lng)
+
+      setDistance(distance)
+    }
+
+    getLocation()
+  }, [restaurant.location?.coordinates])
 
   return (
     <Link
@@ -71,7 +81,7 @@ const SearchCard = ({ restaurant }: Props) => {
         <span
           className={cn("flex items-center gap-3 text-[9px] md:text-[13px]")}
         >
-          {calculateDistance().toFixed(2)} kms away
+          {distance?.toFixed(2)} kms away
         </span>
         <span
           className={cn(

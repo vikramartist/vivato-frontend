@@ -19,9 +19,16 @@ type Props = {
   placeHolder: string
   onReset?: () => void
   searchQuery?: string
+  aiSearch?: boolean
 }
 
-const SearchBar = ({ placeHolder, onReset, onSubmit, searchQuery }: Props) => {
+const SearchBar = ({
+  placeHolder,
+  onReset,
+  onSubmit,
+  searchQuery,
+  aiSearch = false,
+}: Props) => {
   const form = useForm<SearchForm>({
     resolver: zodResolver(formSchema),
     defaultValues: { searchQuery },
@@ -55,7 +62,7 @@ const SearchBar = ({ placeHolder, onReset, onSubmit, searchQuery }: Props) => {
           size={30}
           className="ml-1 hidden text-orange-500 md:block"
         />
-        <FieldGroup>
+        <FieldGroup className="w-full">
           <Controller
             control={form.control}
             name="searchQuery"
@@ -70,20 +77,32 @@ const SearchBar = ({ placeHolder, onReset, onSubmit, searchQuery }: Props) => {
             )}
           />
         </FieldGroup>
-        <Button
-          onClick={handleReset}
-          type="button"
-          variant={"outline"}
-          className="rounded-full text-[9px] md:text-[12px]"
-        >
-          Reset
-        </Button>
-        <Button
-          type="submit"
-          className="rounded-full bg-orange-500 text-[9px] text-white md:text-[12px]"
-        >
-          Search
-        </Button>
+        {aiSearch ? (
+          <Button
+            type="button"
+            variant={"outline"}
+            className="rounded-full bg-linear-to-r from-blue-300 to-red-400 text-[9px] md:text-[12px]"
+          >
+            Ask AI
+          </Button>
+        ) : (
+          <>
+            <Button
+              onClick={handleReset}
+              type="button"
+              variant={"outline"}
+              className="rounded-full text-[9px] md:text-[12px]"
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              className="rounded-full bg-orange-500 text-[9px] text-white md:text-[12px]"
+            >
+              Search
+            </Button>
+          </>
+        )}
       </form>
     </FormProvider>
   )
